@@ -15,6 +15,6 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("mob %s\n", pkg.Version)
+		fmt.Printf("deployer %s\n", pkg.Version)
 	},
 }

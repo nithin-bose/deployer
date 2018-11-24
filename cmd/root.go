@@ -5,6 +5,7 @@ import (
 	"deployer/cmd/k8s"
 	"deployer/cmd/promote"
 	"deployer/cmd/release"
+	"deployer/cmd/webhook"
 
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,7 @@ func init() {
 	RootCmd.AddCommand(docker.RootCmd)
 	RootCmd.AddCommand(release.RootCmd)
 	RootCmd.AddCommand(promote.RootCmd)
+	RootCmd.AddCommand(webhook.RootCmd)
 }
 
 // RootCmd is the root CLI command

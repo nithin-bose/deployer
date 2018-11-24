@@ -2,13 +2,13 @@ package pkg
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"text/template"
 )
 
 func FatalF(format string, a ...interface{}) {
-	fmt.Fprintf(os.Stderr, format, a...)
-	os.Exit(2)
+	log.Panicf(format, a...)
 }
 
 func CreateMobFile(fileName string, fileTemplate string, values interface{}) {
