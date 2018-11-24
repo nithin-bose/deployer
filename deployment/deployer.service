@@ -1,9 +1,12 @@
 [Unit]
-Description=Small server for creating HTTP endpoints (hooks)
-Documentation=https://github.com/adnanh/webhook/
+Description=Application that automates deployemts. This runs its webhooks
+Documentation=https://gitlab.com/nithinbose/deployer/
 
 [Service]
-ExecStart=/usr/bin/webhook -nopanic -hooks /etc/webhook.conf
+Environment=DEPLOYER_DEFAULT_COMPOSE_FILE=docker-compose.yml
+Environment=DEPLOYER_WEBHOOK_ACCESS_KEY=key
+Environment=DEPLOYER_WEBHOOK_ACCESS_TOKEN=token
+ExecStart=/usr/bin/deployer webhook
 
 [Install]
 WantedBy=multi-user.target
