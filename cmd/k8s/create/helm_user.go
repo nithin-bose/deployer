@@ -2,7 +2,7 @@ package create
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 
 	"github.com/spf13/cobra"
 )
@@ -15,6 +15,6 @@ var helmUserCmd = &cobra.Command{
 	Use:   "helm-user",
 	Short: "Create a service account for helm to use",
 	Run: func(cmd *cobra.Command, args []string) {
-		deploy.K8sCreateHelmServiceAccount(pkg.HelmServiceUser)
+		k8s.CreateHelmServiceAccount(pkg.HelmServiceUser)
 	},
 }

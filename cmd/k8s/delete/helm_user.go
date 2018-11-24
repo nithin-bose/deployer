@@ -1,7 +1,7 @@
 package delete
 
 import (
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 
 	"github.com/spf13/cobra"
 )
@@ -17,6 +17,6 @@ var helmUserCmd = &cobra.Command{
 	Use:   "helm-user",
 	Short: "Delete the service account created for helm to use",
 	Run: func(cmd *cobra.Command, args []string) {
-		deploy.K8sDeleteHelmServiceAccount(helmServiceUser)
+		k8s.DeleteHelmServiceAccount(helmServiceUser)
 	},
 }

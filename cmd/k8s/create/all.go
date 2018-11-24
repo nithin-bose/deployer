@@ -2,7 +2,7 @@ package create
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -16,13 +16,13 @@ var allCmd = &cobra.Command{
 	Use:   "all",
 	Short: "Create all cluster resources",
 	Run: func(cmd *cobra.Command, args []string) {
-		deploy.K8sSetRoleForDashboard()
+		k8s.SetRoleForDashboard()
 		time.Sleep(5 * time.Second)
 		registryDetails := pkg.GetDockerRegistryDetails()
-		deploy.K8sCreatePullSecret(registryDetails)
+		k8s.CreatePullSecret(registryDetails)
 		time.Sleep(5 * time.Second)
-		deploy.K8sCreateHelmServiceAccount(pkg.HelmServiceUser)
+		k8s.CreateHelmServiceAccount(pkg.HelmServiceUser)
 		time.Sleep(5 * time.Second)
-		deploy.K8sInstallHelm(pkg.HelmServiceUser)
+		k8s.InstallHelm(pkg.HelmServiceUser)
 	},
 }

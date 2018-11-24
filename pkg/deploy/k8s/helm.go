@@ -1,4 +1,4 @@
-package deploy
+package k8s
 
 import (
 	"deployer/pkg"

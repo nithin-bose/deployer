@@ -2,7 +2,7 @@ package deploy
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 
 	"github.com/spf13/cobra"
 )
@@ -19,7 +19,7 @@ var infraCmd = &cobra.Command{
 			pkg.FatalF("Command must have exactly 2 arguments, cloud platform and app.  \n")
 		}
 
-		deploy.ValidateCloudPlatforn(args[0])
-		deploy.InfraApp(chartsDir, args[0], args[1])
+		k8s.ValidateCloudPlatform(args[0])
+		k8s.InfraApp(chartsDir, args[0], args[1])
 	},
 }

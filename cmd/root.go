@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"deployer/cmd/cluster"
-	"deployer/cmd/delete"
-	"deployer/cmd/deploy"
+	"deployer/cmd/k8s"
 	"deployer/cmd/promote"
 	"deployer/cmd/release"
 
@@ -11,17 +9,15 @@ import (
 )
 
 func init() {
-	RootCmd.AddCommand(cluster.RootCmd)
+	RootCmd.AddCommand(k8s.RootCmd)
 	RootCmd.AddCommand(release.RootCmd)
 	RootCmd.AddCommand(promote.RootCmd)
-	RootCmd.AddCommand(deploy.RootCmd)
-	RootCmd.AddCommand(delete.RootCmd)
 }
 
 // RootCmd is the root CLI command
 var RootCmd = &cobra.Command{
-	Use:           "alt",
-	Short:         "AltShifter stuff that just needs to be easy",
+	Use:           "deployer",
+	Short:         "Deployment related stuff that just needs to be easy",
 	SilenceUsage:  true,
 	SilenceErrors: true,
 }

@@ -2,7 +2,7 @@ package deploy
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 
 	"github.com/spf13/cobra"
 )
@@ -19,6 +19,6 @@ var adminCmd = &cobra.Command{
 			pkg.FatalF("Command must have exactly 1 argument, app.  \n")
 		}
 
-		deploy.AdminPanel(chartsDir, args[0])
+		k8s.AdminPanel(chartsDir, args[0])
 	},
 }

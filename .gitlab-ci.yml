@@ -13,14 +13,3 @@ create-latest-image:
     - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - master
-
-test-release-version:
-  dependencies:
-   - create-latest-image
-  stage: test
-  image: registry.gitlab.com/
-  script:
-    - alt release server major $CI_PROJECT_ID $GITLAB_USER_ID "$GITLAB_USER_NAME"
-  only:
-    - master
-  when: manual

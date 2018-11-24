@@ -1,7 +1,7 @@
 package delete
 
 import (
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -15,8 +15,8 @@ var allCmd = &cobra.Command{
 	Use:   "all",
 	Short: "Delete all cluster resources",
 	Run: func(cmd *cobra.Command, args []string) {
-		deploy.K8sDeleteHelmServiceAccount(helmServiceUser)
+		k8s.DeleteHelmServiceAccount(helmServiceUser)
 		time.Sleep(5 * time.Second)
-		deploy.K8sDeletePullSecret()
+		k8s.DeletePullSecret()
 	},
 }

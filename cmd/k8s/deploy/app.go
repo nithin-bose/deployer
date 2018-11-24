@@ -3,6 +3,7 @@ package deploy
 import (
 	"deployer/pkg"
 	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -30,8 +31,8 @@ var appCmd = &cobra.Command{
 		fmt.Sprintf("Deploying %s... ", args[0])
 
 		if ci {
-			deploy.SetupKubeConfig(args[0])
+			k8s.SetupKubeConfig(args[0])
 		}
-		deploy.ServiceApp(chartsDir, args[0], args[1], args[2])
+		k8s.ServiceApp(chartsDir, args[0], args[1], args[2])
 	},
 }

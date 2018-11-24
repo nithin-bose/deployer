@@ -1,4 +1,4 @@
-package deploy
+package k8s
 
 func GetServiceChart(directory string, app string) string {
 	return directory + "charts/services/" + app

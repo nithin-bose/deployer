@@ -2,7 +2,7 @@ package create
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
+	"deployer/pkg/deploy/k8s"
 
 	"github.com/spf13/cobra"
 )
@@ -18,6 +18,6 @@ var helmUserKubeConfigCmd = &cobra.Command{
 		if len(args) != 1 {
 			pkg.FatalF("Command must have exactly 1 argument, cluster name.  \n")
 		}
-		deploy.K8sCreateSAKubeConfig(pkg.HelmServiceUser, args[0])
+		k8s.CreateSAKubeConfig(pkg.HelmServiceUser, args[0])
 	},
 }

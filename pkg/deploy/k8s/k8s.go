@@ -1,4 +1,4 @@
-package deploy
+package k8s
 
 import (
 	"deployer/pkg"
@@ -17,7 +17,7 @@ type kubectlSASecret struct {
 	} `yaml:"data"`
 }
 
-func K8sCreateHelmServiceAccount(userName string) {
+func CreateHelmServiceAccount(userName string) {
 	command := fmt.Sprintf("kubectl create sa %s --namespace kube-system", userName)
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
@@ -34,7 +34,7 @@ func K8sCreateHelmServiceAccount(userName string) {
 	fmt.Printf("Service account %s was created. Use the command `%s cluster create helm-user-kube-config` to generate the kube config file", userName, pkg.AppName)
 }
 
-func K8sCreateSAKubeConfig(userName string, clusterName string) {
+func CreateSAKubeConfig(userName string, clusterName string) {
 	command := fmt.Sprintf("kubectl get secret --namespace kube-system | grep %s-token- | awk '{print $1}'", userName)
 	fmt.Println(command, " \n")
 	secretName, err := pkg.ExecuteWithOutput(command)
@@ -127,7 +127,7 @@ func getServerURL() string {
 	return serverUrl
 }
 
-func K8sDeleteHelmServiceAccount(userName string) {
+func DeleteHelmServiceAccount(userName string) {
 	command := "kubectl delete clusterrolebinding helm-cluster-rule"
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
@@ -143,7 +143,7 @@ func K8sDeleteHelmServiceAccount(userName string) {
 	}
 }
 
-func K8sCreatePullSecret(registryDetails *pkg.DockerRegistryDetails) {
+func CreatePullSecret(registryDetails *pkg.DockerRegistryDetails) {
 	command := fmt.Sprintf(
 		"kubectl create secret docker-registry docker-registry-pull-secret --docker-server=%s --docker-username=%s --docker-password=%s --docker-email=%s",
 		registryDetails.Host, registryDetails.User, registryDetails.Password, registryDetails.Email)
@@ -154,7 +154,7 @@ func K8sCreatePullSecret(registryDetails *pkg.DockerRegistryDetails) {
 	}
 }
 
-func K8sDeletePullSecret() {
+func DeletePullSecret() {
 	command := "kubectl delete secret docker-registry-pull-secret"
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
@@ -179,7 +179,7 @@ func SetupKubeConfig(environment string) {
 	}
 }
 
-func K8sInstallHelm(userName string) {
+func InstallHelm(userName string) {
 	command := fmt.Sprintf("helm init --service-account %s", userName)
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
@@ -188,7 +188,7 @@ func K8sInstallHelm(userName string) {
 	}
 }
 
-func K8sSetRoleForDashboard() {
+func SetRoleForDashboard() {
 	command := "kubectl create clusterrolebinding kuberenetes-dashboard-role-binding --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard"
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
