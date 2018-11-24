@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 func getGitlabToken() string {
 	gitlabToken := os.Getenv("DEPLOYER_GITLAB_ACCESS_TOKEN")
 	if gitlabToken == "" {
-		log.Fatal("Gitlab token not set")
+		FatalF("%s\n", "Environment variable DEPLOYER_GITLAB_ACCESS_TOKEN not set")
 	}
 	return gitlabToken
 }

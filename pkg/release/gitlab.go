@@ -13,6 +13,9 @@ import (
 
 func isGitlabTokenAdmin() bool {
 	gitlabTokenAdmin := os.Getenv("DEPLOYER_IS_GITLAB_TOKEN_ADMIN")
+	if gitlabTokenAdmin == "" {
+		pkg.FatalF("%s\n", "Environment variable DEPLOYER_IS_GITLAB_TOKEN_ADMIN not set")
+	}
 	b, err := strconv.ParseBool(gitlabTokenAdmin)
 	if err != nil {
 		pkg.FatalF("%s", err)
