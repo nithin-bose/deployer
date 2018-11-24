@@ -43,7 +43,7 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	docker.DeployServiceApp(req.ComposeFile, req.App)
 	if r := recover(); r != nil {
-		err := errors.New(r.(string))
+		err := errors.New("Deployment failed")
 		RenderError(w, err)
 		return
 	}

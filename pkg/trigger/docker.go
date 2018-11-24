@@ -1,7 +1,7 @@
 package trigger
 
 import (
-	"deployer/pkg"
+	"log"
 	"os"
 
 	"github.com/parnurzeal/gorequest"
@@ -29,10 +29,12 @@ func DockerDeployApp(composeFile string, app string) {
 		EndStruct(&resp)
 
 	if errs != nil {
-		pkg.FatalF("%s", errs[0])
+		log.Printf("%s", errs[0])
+		os.Exit(2)
 	}
 
 	if !resp.Success {
-		pkg.FatalF("%s", resp.ErrorMessage)
+		log.Printf("%s", resp.ErrorMessage)
+		os.Exit(2)
 	}
 }

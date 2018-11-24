@@ -17,6 +17,7 @@ func RenderSuccess(w http.ResponseWriter, data interface{}) {
 		RenderError(w, err)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(r)
 }
 
@@ -26,6 +27,7 @@ func RenderError(w http.ResponseWriter, err error) {
 	response["success"] = false
 	response["error_message"] = err.Error()
 	r, _ := json.Marshal(response)
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(r)
 }
 
