@@ -1,18 +1,17 @@
 package webhook
 
 import (
-	"deployer/pkg/webhook"
+	"deployer/cmd/webhook/trigger"
 
 	"github.com/spf13/cobra"
 )
 
 func init() {
+	RootCmd.AddCommand(runCmd)
+	RootCmd.AddCommand(trigger.RootCmd)
 }
 
 var RootCmd = &cobra.Command{
 	Use:   "webhook",
-	Short: "Runs a webserver that exposes the CLI options as webhooks",
-	Run: func(cmd *cobra.Command, args []string) {
-		webhook.Run()
-	},
+	Short: "Webhook tasks",
 }
