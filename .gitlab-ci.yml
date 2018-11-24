@@ -1,0 +1,26 @@
+stages:
+  - build
+  - test
+
+create-latest-image:
+  stage: build
+  image: docker:latest
+  services:
+   - docker:dind
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - master
+
+test-release-version:
+  dependencies:
+   - create-latest-image
+  stage: test
+  image: registry.gitlab.com/
+  script:
+    - alt release server major $CI_PROJECT_ID $GITLAB_USER_ID "$GITLAB_USER_NAME"
+  only:
+    - master
+  when: manual
