@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"deployer/cmd/docker"
 	"deployer/cmd/k8s"
 	"deployer/cmd/promote"
 	"deployer/cmd/release"
@@ -10,6 +11,7 @@ import (
 
 func init() {
 	RootCmd.AddCommand(k8s.RootCmd)
+	RootCmd.AddCommand(docker.RootCmd)
 	RootCmd.AddCommand(release.RootCmd)
 	RootCmd.AddCommand(promote.RootCmd)
 }
