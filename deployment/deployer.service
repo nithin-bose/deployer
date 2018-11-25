@@ -1,12 +1,13 @@
 [Unit]
-Description=Application that automates deployemts. This runs its webhooks
+Description=Webhooks for deployer app
 Documentation=https://gitlab.com/nithinbose/deployer/
 
 [Service]
 Environment=DEPLOYER_DEFAULT_COMPOSE_FILE=docker-compose.yml
+Environment=DEPLOYER_DEFAULT_COMPOSE_FILE_DIR=/docker-stacks/test/
 Environment=DEPLOYER_WEBHOOK_ACCESS_KEY=key
 Environment=DEPLOYER_WEBHOOK_ACCESS_TOKEN=token
-ExecStart=/usr/bin/deployer webhook
+ExecStart=/usr/bin/deployer webhook run
 
 [Install]
 WantedBy=multi-user.target
