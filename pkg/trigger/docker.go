@@ -14,14 +14,19 @@ func getAuthFields() map[string]string {
 	return auth
 }
 
-func DockerDeployApp(composeFile string, app string) {
+func DockerDeployApp(composeFileDir string, composeFile string, app string) {
 	req := gorequest.New()
 
 	body := getAuthFields()
 	body["app"] = app
+	if composeFileDir != "" {
+		body["compose_file_dir"] = composeFile
+	}
+
 	if composeFile != "" {
 		body["compose_file"] = composeFile
 	}
+
 	url := os.Getenv("DEPLOYER_WEBHOOK_URL") + "/docker/deploy/app"
 	resp := WebhookResponse{}
 	_, _, errs := req.Post(url).

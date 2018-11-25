@@ -4,6 +4,7 @@ import (
 	"deployer/pkg"
 	"deployer/pkg/deploy/docker"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -21,6 +22,12 @@ var appCmd = &cobra.Command{
 		}
 
 		fmt.Sprintf("Deploying %s... ", args[0])
+		if composeFileDir != "" {
+			err := os.Chdir(composeFileDir)
+			if err != nil {
+				pkg.FatalF("%s\n", err)
+			}
+		}
 		docker.DeployServiceApp(composeFile, args[0])
 	},
 }

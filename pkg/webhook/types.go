@@ -6,6 +6,7 @@ type Auth struct {
 }
 type DockerRequest struct {
 	Auth
-	ComposeFile string `json:"compose_file"`
-	App         string `json:"app"`
+	ComposeFile    string `json:"compose_file"`
+	ComposeFileDir string `json:"compose_file_dir"`
+	App            string `json:"app"`
 }

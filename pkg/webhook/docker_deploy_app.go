@@ -41,6 +41,20 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
+	if req.ComposeFileDir == "" {
+		req.ComposeFileDir = os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE_DIR")
+		if req.ComposeFileDir == "" {
+			err = errors.New("Required field 'compose_file_dir' cannot be empty")
+			RenderError(w, err)
+			return
+		}
+	}
+	err = os.Chdir(req.ComposeFileDir)
+	if err != nil {
+		RenderError(w, err)
+		return
+	}
 	docker.DeployServiceApp(req.ComposeFile, req.App)
 	RenderSuccess(w, nil)
 }
