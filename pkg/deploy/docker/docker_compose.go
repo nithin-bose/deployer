@@ -9,9 +9,10 @@ func DeployServiceApp(composeFile string, app string) {
 	var command string
 	var err error
 
-	command = fmt.Sprintf("docker-compose pull %s", app)
 	if composeFile != "" {
-		command = command + fmt.Sprintf(" -f %s", composeFile)
+		command = command + fmt.Sprintf("docker-compose -f %s pull %s", composeFile, app)
+	} else {
+		command = fmt.Sprintf("docker-compose pull %s", app)
 	}
 	fmt.Println(command, " \n")
 	err = pkg.Execute(command)
@@ -19,9 +20,10 @@ func DeployServiceApp(composeFile string, app string) {
 		pkg.FatalF("An error occurred:\n %s \n", err.Error())
 	}
 
-	command = fmt.Sprintf("docker-compose up -d %s", app)
 	if composeFile != "" {
-		command = command + fmt.Sprintf(" -f %s", composeFile)
+		command = command + fmt.Sprintf("docker-compose -f %s up -d %s", composeFile, app)
+	} else {
+		command = fmt.Sprintf("docker-compose up -d %s", app)
 	}
 	fmt.Println(command, " \n")
 	err = pkg.Execute(command)
