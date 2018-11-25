@@ -10,7 +10,7 @@ func DeployServiceApp(composeFile string, app string) {
 	var err error
 
 	if composeFile != "" {
-		command = command + fmt.Sprintf("docker-compose -f %s pull %s", composeFile, app)
+		command = fmt.Sprintf("docker-compose -f %s pull %s", composeFile, app)
 	} else {
 		command = fmt.Sprintf("docker-compose pull %s", app)
 	}
@@ -21,7 +21,7 @@ func DeployServiceApp(composeFile string, app string) {
 	}
 
 	if composeFile != "" {
-		command = command + fmt.Sprintf("docker-compose -f %s up -d %s", composeFile, app)
+		command = fmt.Sprintf("docker-compose -f %s up -d %s", composeFile, app)
 	} else {
 		command = fmt.Sprintf("docker-compose up -d %s", app)
 	}
