@@ -31,7 +31,7 @@ func CreateHelmServiceAccount(userName string) {
 	if err != nil {
 		pkg.FatalF("An error occurred:\n %s \n", err.Error())
 	}
-	fmt.Printf("Service account %s was created. Use the command `%s cluster create helm-user-kube-config` to generate the kube config file", userName, pkg.AppName)
+	fmt.Printf("Service account %s was created. Use the command `%s k8s create helm-user-kube-config` to generate the kube config file", userName, pkg.AppName)
 }
 
 func CreateSAKubeConfig(userName string, clusterName string) {
