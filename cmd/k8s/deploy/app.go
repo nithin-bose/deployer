@@ -10,9 +10,11 @@ import (
 )
 
 var ci bool
+var force bool
 
 func init() {
 	appCmd.Flags().BoolVarP(&ci, "ci", "c", false, "Indicate if command is run on the CI server")
+	appCmd.Flags().BoolVarP(&force, "force", "f", false, "Bypass versioned relase check for production")
 	RootCmd.AddCommand(appCmd)
 }
 
@@ -25,7 +27,7 @@ var appCmd = &cobra.Command{
 		}
 
 		deploy.ValidateEnvironment(args[0])
-		if args[0] == "production" && args[2] == "latest" {
+		if !force && args[0] == "production" && args[2] == "latest" {
 			pkg.FatalF("Only versioned releases should be deployed to production \n")
 		}
 		fmt.Sprintf("Deploying %s... ", args[0])
