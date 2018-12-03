@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"deployer/pkg"
+	"deployer/pkg/deploy"
 	"fmt"
 )
 
@@ -29,7 +30,17 @@ func SystemApp(directory string, app string, environment string) {
 	}
 }
 
-func ServiceApp(directory string, environment string, app string, version string) {
+func DeployServiceApp(directory string, force bool, ci bool, environment string, app string, version string) {
+	deploy.ValidateEnvironment(environment)
+	if !force && environment == "production" && version == "latest" {
+		pkg.FatalF("Only versioned releases should be deployed to production \n")
+	}
+	fmt.Sprintf("Deploying %s... ", environment)
+
+	if ci {
+		SetupKubeConfig(environment)
+	}
+
 	var command string
 	var err error
 	chart := GetServiceChart(directory, app)

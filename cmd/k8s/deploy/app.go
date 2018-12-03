@@ -2,9 +2,7 @@ package deploy
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
 	"deployer/pkg/deploy/k8s"
-	"fmt"
 
 	"github.com/spf13/cobra"
 )
@@ -25,16 +23,6 @@ var appCmd = &cobra.Command{
 		if len(args) != 3 {
 			pkg.FatalF("Command must have exactly 3 arguments environment, app and version \n")
 		}
-
-		deploy.ValidateEnvironment(args[0])
-		if !force && args[0] == "production" && args[2] == "latest" {
-			pkg.FatalF("Only versioned releases should be deployed to production \n")
-		}
-		fmt.Sprintf("Deploying %s... ", args[0])
-
-		if ci {
-			k8s.SetupKubeConfig(args[0])
-		}
-		k8s.ServiceApp(chartsDir, args[0], args[1], args[2])
+		k8s.DeployServiceApp(chartsDir, force, ci, args[0], args[1], args[2])
 	},
 }

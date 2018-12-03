@@ -43,7 +43,7 @@ var appsCmd = &cobra.Command{
 		}
 		if prompter.YN("Are you sure you want to deploy all of the above?", false) {
 			for _, app := range apps {
-				k8s.ServiceApp(chartsDir, args[0], app, "latest")
+				k8s.DeployServiceApp(chartsDir, true, false, args[0], app, "latest")
 			}
 		}
 	},
