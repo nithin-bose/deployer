@@ -27,7 +27,7 @@ func DockerDeployApp(composeFileDir string, composeFile string, app string) {
 		body["compose_file"] = composeFile
 	}
 
-	url := os.Getenv("DEPLOYER_WEBHOOK_URL") + "/docker/deploy/app"
+	url := os.Getenv("DEPLOYER_WEBHOOK_DOCKER_URL") + "/docker/deploy/app"
 	resp := WebhookResponse{}
 	_, _, errs := req.Post(url).
 		Send(body).

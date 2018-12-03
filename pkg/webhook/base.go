@@ -31,8 +31,8 @@ func RenderError(w http.ResponseWriter, err error) {
 	w.Write(r)
 }
 
-func authenticate(key string, token string) error {
-	if key != os.Getenv("DEPLOYER_WEBHOOK_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_ACCESS_TOKEN") {
+func authenticateDocker(key string, token string) error {
+	if key != os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN") {
 		return errors.New("Authentication error")
 	}
 	return nil

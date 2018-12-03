@@ -21,7 +21,7 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		RenderError(w, err)
 		return
 	}
-	err = authenticate(req.AccessKey, req.AccessToken)
+	err = authenticateDocker(req.AccessKey, req.AccessToken)
 	if err != nil {
 		RenderError(w, err)
 		return
