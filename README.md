@@ -55,6 +55,7 @@
   ### Client:
   ```
   DEPLOYER_WEBHOOK_DOCKER_URL
+  DEPLOYER_WEBHOOK_K8S_URL
   ```
 
   ### Both:
