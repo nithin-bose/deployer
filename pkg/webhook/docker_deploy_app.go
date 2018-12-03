@@ -10,6 +10,20 @@ import (
 )
 
 func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
+	var err error
+	composeFile := os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE")
+	if composeFile == "" {
+		err = errors.New("DEPLOYER_DEFAULT_COMPOSE_FILE not set")
+		RenderError(w, err)
+		return
+	}
+
+	composeFileDir := os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE_DIR")
+	if composeFileDir == "" {
+		err = errors.New("DEPLOYER_DEFAULT_COMPOSE_FILE_DIR not set")
+		RenderError(w, err)
+		return
+	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		RenderError(w, err)
@@ -33,28 +47,11 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.ComposeFile == "" {
-		req.ComposeFile = os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE")
-		if req.ComposeFile == "" {
-			err = errors.New("Required field 'compose_file' cannot be empty")
-			RenderError(w, err)
-			return
-		}
-	}
-
-	if req.ComposeFileDir == "" {
-		req.ComposeFileDir = os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE_DIR")
-		if req.ComposeFileDir == "" {
-			err = errors.New("Required field 'compose_file_dir' cannot be empty")
-			RenderError(w, err)
-			return
-		}
-	}
-	err = os.Chdir(req.ComposeFileDir)
+	err = os.Chdir(composeFileDir)
 	if err != nil {
 		RenderError(w, err)
 		return
 	}
-	docker.DeployServiceApp(req.ComposeFile, req.App)
+	docker.DeployServiceApp(composeFile, req.App)
 	RenderSuccess(w, nil)
 }

@@ -8,12 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var composeFile string
-var composeFileDir string
-
 func init() {
-	dockerCmd.PersistentFlags().StringVarP(&composeFile, "compose-file", "f", "", "Path where the docker compose file is present")
-	RootCmd.PersistentFlags().StringVarP(&composeFileDir, "compose-file-dir", "d", "", "Dir where docker-compose is to be run")
 	RootCmd.AddCommand(dockerCmd)
 }
 
@@ -26,6 +21,6 @@ var dockerCmd = &cobra.Command{
 		}
 
 		fmt.Sprintf("Deploying %s... ", args[0])
-		trigger.DockerDeployApp(composeFileDir, composeFile, args[0])
+		trigger.DockerDeployApp(args[0])
 	},
 }
