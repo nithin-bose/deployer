@@ -37,3 +37,10 @@ func authenticateDocker(key string, token string) error {
 	}
 	return nil
 }
+
+func authenticateK8s(key string, token string) error {
+	if key != os.Getenv("DEPLOYER_WEBHOOK_K8S_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN") {
+		return errors.New("Authentication error")
+	}
+	return nil
+}

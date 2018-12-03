@@ -14,6 +14,7 @@ func Run() {
 	// Routes consist of a path and a handler function.
 	r.HandleFunc("/", HomeHandler).Methods("GET")
 	r.HandleFunc("/docker/deploy/app", DockerDeployAppHandler).Methods("POST")
+	r.HandleFunc("/k8s/deploy/app", K8sDeployAppHandler).Methods("POST")
 
 	port := os.Getenv("DEPLOYER_WEBHOOK_PORT")
 	if port == "" {

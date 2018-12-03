@@ -36,19 +36,28 @@
     ```
 
 ## Environment variables to be set
-  Server:
+  ### Server:
   ```
   DEPLOYER_WEBHOOK_PORT
+  ```
+
+  For docker deployments
+  ```
   DEPLOYER_DEFAULT_COMPOSE_FILE
   DEPLOYER_DEFAULT_COMPOSE_FILE_DIR
   ```
 
-  Client:
+  For k8s deployments
+  ```
+  DEPLOYER_HELM_CHARTS_DIR
+  ```
+
+  ### Client:
   ```
   DEPLOYER_WEBHOOK_DOCKER_URL
   ```
 
-  Both:
+  ### Both:
   ```
   DEPLOYER_DEBUG
   ```
@@ -57,4 +66,10 @@
   ```
   DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY
   DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN
+  ```
+
+  For k8s deployments
+  ```
+  DEPLOYER_WEBHOOK_K8S_ACCESS_KEY
+  DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN
   ```
