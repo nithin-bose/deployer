@@ -7,17 +7,17 @@ import (
 	"github.com/parnurzeal/gorequest"
 )
 
-func getAuthFields() map[string]string {
+func getDockerAuthFields() map[string]string {
 	auth := make(map[string]string)
-	auth["access_key"] = os.Getenv("DEPLOYER_WEBHOOK_ACCESS_KEY")
-	auth["access_token"] = os.Getenv("DEPLOYER_WEBHOOK_ACCESS_TOKEN")
+	auth["access_key"] = os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY")
+	auth["access_token"] = os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN")
 	return auth
 }
 
 func DockerDeployApp(composeFileDir string, composeFile string, app string) {
 	req := gorequest.New()
 
-	body := getAuthFields()
+	body := getDockerAuthFields()
 	body["app"] = app
 	if composeFileDir != "" {
 		body["compose_file_dir"] = composeFile
