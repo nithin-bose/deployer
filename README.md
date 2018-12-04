@@ -53,8 +53,13 @@
   ```
 
   ### Client:
+  For docker deployments
   ```
   DEPLOYER_WEBHOOK_DOCKER_URL
+  ```
+
+  For k8s deployments
+  ```
   DEPLOYER_WEBHOOK_K8S_URL
   ```
 
