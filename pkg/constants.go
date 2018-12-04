@@ -2,7 +2,7 @@ package pkg
 
 const (
 	AppName          = "deployer"
-	Version          = "2.0.0"
+	Version          = "2.0.1"
 	ConfigFolder     = ".deployer"
 	ConfigFolderPath = "~/.deployer"
 

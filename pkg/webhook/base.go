@@ -33,6 +33,9 @@ func RenderError(w http.ResponseWriter, err error) {
 
 func authenticateDocker(key string, token string) error {
 	if key != os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN") {
+		log.Println("Docker authentication error")
+		log.Println("Key:", key)
+		log.Println("Key:", token)
 		return errors.New("Authentication error")
 	}
 	return nil
@@ -40,6 +43,9 @@ func authenticateDocker(key string, token string) error {
 
 func authenticateK8s(key string, token string) error {
 	if key != os.Getenv("DEPLOYER_WEBHOOK_K8S_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN") {
+		log.Println("K8s authentication error")
+		log.Println("Key:", key)
+		log.Println("Key:", token)
 		return errors.New("Authentication error")
 	}
 	return nil
