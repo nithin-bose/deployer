@@ -8,4 +8,3 @@ FROM alpine
 RUN apk add --no-cache ca-certificates
 WORKDIR /bin/
 COPY --from=builder /bin/deployer .
-WORKDIR /charts/apps
