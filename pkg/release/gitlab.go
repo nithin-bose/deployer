@@ -3,6 +3,7 @@ package release
 import (
 	"bytes"
 	"deployer/pkg"
+	"errors"
 	"fmt"
 	"html/template"
 	"os"
@@ -11,23 +12,27 @@ import (
 	"github.com/jmcvetta/napping"
 )
 
-func isGitlabTokenAdmin() bool {
+func isGitlabTokenAdmin() (bool, error) {
 	gitlabTokenAdmin := os.Getenv("DEPLOYER_IS_GITLAB_TOKEN_ADMIN")
 	if gitlabTokenAdmin == "" {
-		pkg.FatalF("%s\n", "Environment variable DEPLOYER_IS_GITLAB_TOKEN_ADMIN not set")
+		return false, errors.New("Environment variable DEPLOYER_IS_GITLAB_TOKEN_ADMIN not set")
 	}
 	b, err := strconv.ParseBool(gitlabTokenAdmin)
 	if err != nil {
-		pkg.FatalF("%s", err)
+		return false, err
 	}
-	return b
+	return b, nil
 }
 
-func createTag(projectID string, userID string, tag string, ref string, changeLog string) {
+func createTag(projectID string, userID string, tag string, ref string, changeLog string) error {
 	endPoint := fmt.Sprintf("/projects/%s/repository/tags", projectID)
 
 	headers := make(map[string]string)
-	if isGitlabTokenAdmin() {
+	gitlabAdmin, err := isGitlabTokenAdmin()
+	if err != nil {
+		return err
+	}
+	if gitlabAdmin {
 		headers["SUDO"] = userID
 	}
 
@@ -40,21 +45,22 @@ func createTag(projectID string, userID string, tag string, ref string, changeLo
 	endPoint = endPoint + "?" + payload
 
 	apiResponse := make(map[string]interface{})
-	err := pkg.CallGitlabAPI(endPoint, headers, nil, &apiResponse)
+	err = pkg.CallGitlabAPI(endPoint, headers, nil, &apiResponse)
 	if err != nil {
-		pkg.FatalF("Could not create tag %v\n", err.Error())
+		return err
 	}
 
 	message, ok := apiResponse["message"]
 	if !ok || message == nil {
-		pkg.FatalF("Could not create tag, error message: %v\n", message)
+		return errors.New("Could not create tag, " + message.(string))
 	}
+	return nil
 }
 
-func gitlabReleaseNotes(changes []string, releaserName string) string {
+func gitlabReleaseNotes(changes []string, releaserName string) (string, error) {
 	tmpl, err := template.New("release").Parse(pkg.BodyTemplate)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return "", err
 	}
 
 	var out bytes.Buffer
@@ -67,26 +73,39 @@ func gitlabReleaseNotes(changes []string, releaserName string) string {
 	})
 
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return "", err
 	}
-	return out.String()
+	return out.String(), nil
 }
 
-func mergeRequestDescription(promoter string) string {
+func mergeRequestDescription(promoter string) (string, error) {
 	description := ""
-	if !isGitlabTokenAdmin() && promoter != "" {
+	gitlabAdmin, err := isGitlabTokenAdmin()
+	if err != nil {
+		return "", err
+	}
+	if !gitlabAdmin && promoter != "" {
 		description = fmt.Sprintf("Promoted by **%s**", promoter)
 	}
 
-	return description
+	return description, nil
 }
 
-func createMR(sourceBranch string, targetBranch string, projectID string, userID string, promoter string) {
+func createMR(sourceBranch string, targetBranch string, projectID string, userID string, promoter string) error {
 	endPoint := fmt.Sprintf("/projects/%s/merge_requests", projectID)
 
 	headers := make(map[string]string)
-	if isGitlabTokenAdmin() {
+	gitlabAdmin, err := isGitlabTokenAdmin()
+	if err != nil {
+		return err
+	}
+	if gitlabAdmin {
 		headers["SUDO"] = userID
+	}
+
+	description, err := mergeRequestDescription(promoter)
+	if err != nil {
+		return err
 	}
 
 	payload := napping.Params{
@@ -95,19 +114,20 @@ func createMR(sourceBranch string, targetBranch string, projectID string, userID
 		"target_branch":        targetBranch,
 		"remove_source_branch": "false",
 		"labels":               "promote, pipeline",
-		"description":          mergeRequestDescription(promoter),
+		"description":          description,
 	}.AsUrlValues().Encode()
 
 	endPoint = endPoint + "?" + payload
 
 	apiResponse := make(map[string]interface{})
-	err := pkg.CallGitlabAPI(endPoint, headers, nil, &apiResponse)
+	err = pkg.CallGitlabAPI(endPoint, headers, nil, &apiResponse)
 	if err != nil {
-		pkg.FatalF("Could not create tag %v\n", err.Error())
+		return err
 	}
 
 	message, ok := apiResponse["message"]
 	if ok && message != nil {
-		pkg.FatalF("Could not create tag, error message: %v\n", message)
+		return errors.New("Could not create tag, " + message.(string))
 	}
+	return nil
 }

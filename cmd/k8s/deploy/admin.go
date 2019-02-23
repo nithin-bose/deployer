@@ -1,8 +1,8 @@
 package deploy
 
 import (
-	"deployer/pkg"
 	"deployer/pkg/deploy/k8s"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -16,9 +16,12 @@ var adminCmd = &cobra.Command{
 	Short: "Deploy admin panels. Helm is required to be installed and configured",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			pkg.FatalF("Command must have exactly 1 argument, app.  \n")
+			log.Fatal("Command must have exactly 1 argument, app")
 		}
 
-		k8s.AdminPanel(chartsDir, args[0])
+		err := k8s.AdminPanel(chartsDir, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

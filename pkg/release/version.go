@@ -1,28 +1,27 @@
 package release
 
 import (
-	"deployer/pkg"
 	"fmt"
 	"strconv"
 	"strings"
 )
 
-func newVersion(version string, releaseType string) string {
+func newVersion(version string, releaseType string) (string, error) {
 	parts := strings.SplitN(version, ".", 3)
 
 	major, err := strconv.ParseUint(parts[0], 10, 64)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return "", err
 	}
 
 	minor, err := strconv.ParseUint(parts[1], 10, 64)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return "", err
 	}
 
 	patch, err := strconv.ParseUint(parts[2], 10, 64)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return "", err
 	}
 
 	if releaseType == "major" {
@@ -37,5 +36,5 @@ func newVersion(version string, releaseType string) string {
 	}
 
 	newVersion := fmt.Sprintf("%d.%d.%d", major, minor, patch)
-	return newVersion
+	return newVersion, nil
 }

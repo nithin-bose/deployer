@@ -17,47 +17,48 @@ type kubectlSASecret struct {
 	} `yaml:"data"`
 }
 
-func CreateHelmServiceAccount(userName string) {
+func CreateHelmServiceAccount(userName string) error {
 	command := fmt.Sprintf("kubectl create sa %s --namespace kube-system", userName)
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	command = fmt.Sprintf("kubectl create clusterrolebinding helm-role-binding --clusterrole=cluster-admin --serviceaccount=kube-system:%s", userName)
 	fmt.Println(command, " \n")
 	err = pkg.Execute(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 	fmt.Printf("Service account %s was created. Use the command `%s k8s create helm-user-kube-config` to generate the kube config file", userName, pkg.AppName)
+	return nil
 }
 
-func CreateSAKubeConfig(userName string, clusterName string) {
+func CreateSAKubeConfig(userName string, clusterName string) error {
 	command := fmt.Sprintf("kubectl get secret --namespace kube-system | grep %s-token- | awk '{print $1}'", userName)
 	fmt.Println(command, " \n")
 	secretName, err := pkg.ExecuteWithOutput(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	command = fmt.Sprintf("kubectl get secret --namespace kube-system %s -o yaml", secretName)
 	fmt.Println(command, " \n")
 	secret, err := pkg.ExecuteWithOutput(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	userSecret := &kubectlSASecret{}
 	if err := yaml.Unmarshal([]byte(secret), userSecret); err != nil {
-		pkg.FatalF("An error occurred while parsing user secret:\n %s \n", err.Error())
+		return err
 	}
 
-	generateKubeConfig(userSecret.Data.CACrt, userSecret.Data.Token, clusterName)
+	return generateKubeConfig(userSecret.Data.CACrt, userSecret.Data.Token, clusterName)
 }
 
-func generateKubeConfig(base64CACrt string, base64Token string, clusterName string) {
+func generateKubeConfig(base64CACrt string, base64Token string, clusterName string) error {
 	kubeConfigTplArr := []string{
 		`apiVersion: v1`,
 		`kind: Config`,
@@ -83,7 +84,12 @@ func generateKubeConfig(base64CACrt string, base64Token string, clusterName stri
 
 	token, err := base64.StdEncoding.DecodeString(base64Token)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
+	}
+
+	serverUrl, err := getServerURL()
+	if err != nil {
+		return err
 	}
 
 	tplValues := struct {
@@ -93,21 +99,20 @@ func generateKubeConfig(base64CACrt string, base64Token string, clusterName stri
 		ClusterName string
 	}{
 		string(token),
-		getServerURL(),
+		serverUrl,
 		base64CACrt,
 		clusterName,
 	}
 
-	pkg.CreateMobFile("kubeconfig", kubeConfigTpl, tplValues)
-
+	return pkg.CreateMobFile("kubeconfig", kubeConfigTpl, tplValues)
 }
 
-func getServerURL() string {
+func getServerURL() (string, error) {
 	command := "kubectl cluster-info | grep master | awk '{print $NF}'"
 	fmt.Println(command, " \n")
 	rawServerUrl, err := pkg.ExecuteWithOutput(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return "", err
 	}
 
 	//stripping non printable characters
@@ -124,75 +129,57 @@ func getServerURL() string {
 	end := strings.Index(serverUrl, "[")
 	serverUrl = serverUrl[:end]
 
-	return serverUrl
+	return serverUrl, nil
 }
 
-func DeleteHelmServiceAccount(userName string) {
+func DeleteHelmServiceAccount(userName string) error {
 	command := "kubectl delete clusterrolebinding helm-cluster-rule"
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	command = fmt.Sprintf("kubectl delete sa %s", userName)
 	fmt.Println(command, " \n")
-	err = pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func CreatePullSecret(registryDetails *pkg.DockerRegistryDetails) {
+func CreatePullSecret(registryDetails *pkg.DockerRegistryDetails) error {
 	command := fmt.Sprintf(
 		"kubectl create secret docker-registry docker-registry-pull-secret --docker-server=%s --docker-username=%s --docker-password=%s --docker-email=%s",
 		registryDetails.Host, registryDetails.User, registryDetails.Password, registryDetails.Email)
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func DeletePullSecret() {
+func DeletePullSecret() error {
 	command := "kubectl delete secret docker-registry-pull-secret"
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func SetupKubeConfig(environment string) {
+func SetupKubeConfig(environment string) error {
 	command := "rm -rf ~/.kube && mkdir ~/.kube"
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	command = fmt.Sprintf("cp %s/kube/%s ~/.kube/config", pkg.ConfigFolderPath, environment)
 	fmt.Println(command, " \n")
-	err = pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func InstallHelm(userName string) {
+func InstallHelm(userName string) error {
 	command := fmt.Sprintf("helm init --service-account %s", userName)
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func SetRoleForDashboard() {
+func SetRoleForDashboard() error {
 	command := "kubectl create clusterrolebinding kuberenetes-dashboard-role-binding --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard"
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }

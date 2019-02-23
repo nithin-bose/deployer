@@ -2,21 +2,21 @@ package release
 
 import (
 	"deployer/pkg"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 )
 
-func CheckForGitRepo() {
+func CheckForGitRepo() bool {
 	_, err := os.Stat(".git")
 	if err != nil {
-		fmt.Println("Git repo not found")
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return false
 	}
-	fmt.Println("Git repo found...")
+	return true
 }
 
-func Create(releaseType string, projectID string, userID string, releaserName string) {
+func Create(releaseType string, projectID string, userID string, releaserName string) error {
 	latestRelease := "0.0.0"
 	tag, err := lastTag()
 	if err != nil {
@@ -30,7 +30,7 @@ func Create(releaseType string, projectID string, userID string, releaserName st
 
 	gitLog, err := gitLog(tag)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	gitLog = strings.TrimSpace(gitLog)
@@ -39,25 +39,31 @@ func Create(releaseType string, projectID string, userID string, releaserName st
 
 	numChanges := len(changes)
 	if numChanges <= 1 {
-		pkg.FatalF("No changes to the last release detected \n")
+		return errors.New("No changes to the last release detected")
 	}
 	if numChanges > pkg.MaxChanges {
 		changes = changes[:pkg.MaxChanges]
 		changes = append(changes, "Truncated")
 	}
 
-	description := gitlabReleaseNotes(changes, releaserName)
+	description, err := gitlabReleaseNotes(changes, releaserName)
+	if err != nil {
+		return err
+	}
 
-	newVersion := newVersion(latestRelease, releaseType)
+	newVersion, err := newVersion(latestRelease, releaseType)
+	if err != nil {
+		return err
+	}
 	fmt.Println("Creating release", newVersion+"...")
 	newTag := "v" + newVersion
 	ref, err := gitSHA("HEAD")
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
-	createTag(projectID, userID, newTag, ref, description)
+	return createTag(projectID, userID, newTag, ref, description)
 }
 
-func Promote(sourceBranch string, targetBranch string, projectID string, user string, promoter string) {
-	createMR(sourceBranch, targetBranch, projectID, user, promoter)
+func Promote(sourceBranch string, targetBranch string, projectID string, user string, promoter string) error {
+	return createMR(sourceBranch, targetBranch, projectID, user, promoter)
 }

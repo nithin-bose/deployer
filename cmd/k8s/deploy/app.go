@@ -1,8 +1,8 @@
 package deploy
 
 import (
-	"deployer/pkg"
 	"deployer/pkg/deploy/k8s"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -21,8 +21,11 @@ var appCmd = &cobra.Command{
 	Short: "Deploy service apps. Helm is required to be installed and configured",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 3 {
-			pkg.FatalF("Command must have exactly 3 arguments environment, app and version \n")
+			log.Fatal("Command must have exactly 3 arguments environment, app and version \n")
 		}
-		k8s.DeployServiceApp(chartsDir, force, ci, args[0], args[1], args[2])
+		err := k8s.DeployServiceApp(chartsDir, force, ci, args[0], args[1], args[2])
+		if err != nil {
+			log.Fatal("An error occurred:\n %s \n", err.Error())
+		}
 	},
 }

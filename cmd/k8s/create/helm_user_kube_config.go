@@ -3,6 +3,7 @@ package create
 import (
 	"deployer/pkg"
 	"deployer/pkg/deploy/k8s"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -16,8 +17,11 @@ var helmUserKubeConfigCmd = &cobra.Command{
 	Short: "Create the kube config for the helm service account to use with CI/CD",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			pkg.FatalF("Command must have exactly 1 argument, cluster name.  \n")
+			log.Fatal("Command must have exactly 1 argument, cluster name")
 		}
-		k8s.CreateSAKubeConfig(pkg.HelmServiceUser, args[0])
+		err := k8s.CreateSAKubeConfig(pkg.HelmServiceUser, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

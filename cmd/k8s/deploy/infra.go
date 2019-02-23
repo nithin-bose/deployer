@@ -1,8 +1,8 @@
 package deploy
 
 import (
-	"deployer/pkg"
 	"deployer/pkg/deploy/k8s"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -16,10 +16,16 @@ var infraCmd = &cobra.Command{
 	Short: "Deploy infrastructure apps like traefik, volume provisioners etc. Helm is required to be installed and configured",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
-			pkg.FatalF("Command must have exactly 2 arguments, cloud platform and app.  \n")
+			log.Fatal("Command must have exactly 2 arguments, cloud platform and app")
 		}
 
-		k8s.ValidateCloudPlatform(args[0])
-		k8s.InfraApp(chartsDir, args[0], args[1])
+		err := k8s.ValidateCloudPlatform(args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = k8s.InfraApp(chartsDir, args[0], args[1])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

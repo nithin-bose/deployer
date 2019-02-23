@@ -3,20 +3,18 @@ package k8s
 import (
 	"deployer/pkg"
 	"deployer/pkg/deploy"
+	"errors"
 	"fmt"
 )
 
-func InfraApp(directory string, cloudPlatorm string, app string) {
+func InfraApp(directory string, cloudPlatorm string, app string) error {
 	chart := GetInfraChart(directory, cloudPlatorm, app)
 	command := fmt.Sprintf("helm upgrade --install %s %s", app, chart)
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func SystemApp(directory string, app string, environment string) {
+func SystemApp(directory string, app string, environment string) error {
 	chart := GetSystemChart(directory, app)
 	valFile := GetValFilePath(chart, pkg.ProductionValsFile)
 	if environment != "production" {
@@ -24,25 +22,27 @@ func SystemApp(directory string, app string, environment string) {
 	}
 	command := fmt.Sprintf("helm upgrade -f %s --install %s-%s %s --namespace kube-system", valFile, app, environment, chart)
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func DeployServiceApp(directory string, force bool, ci bool, environment string, app string, version string) {
-	deploy.ValidateEnvironment(environment)
+func DeployServiceApp(directory string, force bool, ci bool, environment string, app string, version string) error {
+	err := deploy.ValidateEnvironment(environment)
+	if err != nil {
+		return err
+	}
 	if !force && environment == "production" && version == "latest" {
-		pkg.FatalF("Only versioned releases should be deployed to production \n")
+		return errors.New("Only versioned releases should be deployed to production")
 	}
 	fmt.Sprintf("Deploying %s... ", environment)
 
 	if ci {
-		SetupKubeConfig(environment)
+		err = SetupKubeConfig(environment)
+		if err != nil {
+			return err
+		}
 	}
 
 	var command string
-	var err error
 	chart := GetServiceChart(directory, app)
 	valFile := GetValFilePath(chart, pkg.ProductionValsFile)
 	if environment != "production" {
@@ -51,36 +51,24 @@ func DeployServiceApp(directory string, force bool, ci bool, environment string,
 
 	command = fmt.Sprintf("helm upgrade -f %s --set image.tag=%s --install %s-%s %s", valFile, version, app, environment, chart)
 	fmt.Println(command, " \n")
-	err = pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func AdminPanel(directory string, app string) {
+func AdminPanel(directory string, app string) error {
 	chart := GetAdminPanelChart(directory, app)
 	command := fmt.Sprintf("helm upgrade --install %s %s", app, chart)
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func DeleteAppWithEnvironment(environment string, app string) {
+func DeleteAppWithEnvironment(environment string, app string) error {
 	command := fmt.Sprintf("helm delete %s-%s", app, environment)
 	fmt.Println(command, "\n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }
 
-func DeleteApp(app string) {
+func DeleteApp(app string) error {
 	command := fmt.Sprintf("helm delete %s", app)
 	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }

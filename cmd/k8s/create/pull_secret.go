@@ -3,6 +3,7 @@ package create
 import (
 	"deployer/pkg"
 	"deployer/pkg/deploy/k8s"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,9 @@ var pullSecretCmd = &cobra.Command{
 	Short: "Create the docker registry pull secret",
 	Run: func(cmd *cobra.Command, args []string) {
 		registryDetails := pkg.GetDockerRegistryDetails()
-		k8s.CreatePullSecret(registryDetails)
+		err := k8s.CreatePullSecret(registryDetails)
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

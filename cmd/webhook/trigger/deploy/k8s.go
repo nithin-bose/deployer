@@ -1,8 +1,8 @@
 package deploy
 
 import (
-	"deployer/pkg"
 	"deployer/pkg/trigger"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -16,8 +16,11 @@ var k8sCmd = &cobra.Command{
 	Short: "Trigger k8s deploy webhook",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 3 {
-			pkg.FatalF("Command must have exactly 3 arguments environment, app and version \n")
+			log.Fatal("Command must have exactly 3 arguments environment, app and version")
 		}
-		trigger.K8sDeployApp(args[0], args[1], args[2])
+		err := trigger.K8sDeployApp(args[0], args[1], args[2])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

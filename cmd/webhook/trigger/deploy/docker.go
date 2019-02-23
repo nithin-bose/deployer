@@ -1,9 +1,9 @@
 package deploy
 
 import (
-	"deployer/pkg"
 	"deployer/pkg/trigger"
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -17,10 +17,13 @@ var dockerCmd = &cobra.Command{
 	Short: "Trigger docker deploy webhook",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			pkg.FatalF("Command must have exactly 1 argument, app name \n")
+			log.Fatal("Command must have exactly 1 argument, app name")
 		}
 
 		fmt.Sprintf("Deploying %s... ", args[0])
-		trigger.DockerDeployApp(args[0])
+		err := trigger.DockerDeployApp(args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

@@ -34,7 +34,10 @@ func K8sDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		RenderError(w, err)
 		return
 	}
-	deploy.ValidateEnvironment(req.Environment)
+	err = deploy.ValidateEnvironment(req.Environment)
+	if err != nil {
+		RenderError(w, err)
+	}
 
 	if req.App == "" {
 		err = errors.New("Required field 'app' cannot be empty")
@@ -48,6 +51,9 @@ func K8sDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	k8s.DeployServiceApp(chartsDir, false, true, req.Environment, req.App, req.Version)
+	err = k8s.DeployServiceApp(chartsDir, false, true, req.Environment, req.App, req.Version)
+	if err != nil {
+		RenderError(w, err)
+	}
 	RenderSuccess(w, nil)
 }

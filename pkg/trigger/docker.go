@@ -1,7 +1,7 @@
 package trigger
 
 import (
-	"log"
+	"errors"
 	"os"
 
 	"github.com/parnurzeal/gorequest"
@@ -14,7 +14,7 @@ func getDockerAuthFields() map[string]string {
 	return auth
 }
 
-func DockerDeployApp(app string) {
+func DockerDeployApp(app string) error {
 	req := gorequest.New()
 
 	body := getDockerAuthFields()
@@ -27,12 +27,11 @@ func DockerDeployApp(app string) {
 		EndStruct(&resp)
 
 	if errs != nil {
-		log.Printf("%s", errs[0])
-		os.Exit(2)
+		return errs[0]
 	}
 
 	if !resp.Success {
-		log.Printf("%s", resp.ErrorMessage)
-		os.Exit(2)
+		return errors.New(resp.ErrorMessage)
 	}
+	return nil
 }

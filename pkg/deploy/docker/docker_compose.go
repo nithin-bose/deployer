@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func DeployServiceApp(composeFile string, app string) {
+func DeployServiceApp(composeFile string, app string) error {
 	var command string
 	var err error
 
@@ -17,7 +17,7 @@ func DeployServiceApp(composeFile string, app string) {
 	fmt.Println(command, " \n")
 	err = pkg.Execute(command)
 	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
+		return err
 	}
 
 	if composeFile != "" {
@@ -26,8 +26,5 @@ func DeployServiceApp(composeFile string, app string) {
 		command = fmt.Sprintf("docker-compose up -d %s", app)
 	}
 	fmt.Println(command, " \n")
-	err = pkg.Execute(command)
-	if err != nil {
-		pkg.FatalF("An error occurred:\n %s \n", err.Error())
-	}
+	return pkg.Execute(command)
 }

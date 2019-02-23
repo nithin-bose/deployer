@@ -1,9 +1,9 @@
 package deploy
 
 import (
-	"deployer/pkg"
 	"deployer/pkg/deploy/docker"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -18,16 +18,19 @@ var appCmd = &cobra.Command{
 	Short: "Deploy service apps. docker-compose is required to be installed and configured",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
-			pkg.FatalF("Command must have exactly 1 argument, app name \n")
+			log.Fatal("Command must have exactly 1 argument, app name")
 		}
 
 		fmt.Sprintf("Deploying %s... ", args[0])
 		if composeFileDir != "" {
 			err := os.Chdir(composeFileDir)
 			if err != nil {
-				pkg.FatalF("%s\n", err)
+				log.Fatal(err)
 			}
 		}
-		docker.DeployServiceApp(composeFile, args[0])
+		err := docker.DeployServiceApp(composeFile, args[0])
+		if err != nil {
+			log.Fatal(err)
+		}
 	},
 }

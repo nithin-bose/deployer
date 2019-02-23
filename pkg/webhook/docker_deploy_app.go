@@ -52,6 +52,10 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		RenderError(w, err)
 		return
 	}
-	docker.DeployServiceApp(composeFile, req.App)
+	err = docker.DeployServiceApp(composeFile, req.App)
+	if err != nil {
+		RenderError(w, err)
+		return
+	}
 	RenderSuccess(w, nil)
 }

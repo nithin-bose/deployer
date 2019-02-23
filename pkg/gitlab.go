@@ -9,12 +9,12 @@ import (
 	"github.com/jmcvetta/napping"
 )
 
-func getGitlabToken() string {
+func getGitlabToken() (string, error) {
 	gitlabToken := os.Getenv("DEPLOYER_GITLAB_ACCESS_TOKEN")
 	if gitlabToken == "" {
-		FatalF("%s\n", "Environment variable DEPLOYER_GITLAB_ACCESS_TOKEN not set")
+		return "", errors.New("Environment variable DEPLOYER_GITLAB_ACCESS_TOKEN not set")
 	}
-	return gitlabToken
+	return gitlabToken, nil
 }
 
 func callAPI(server string, endPoint string, headers map[string]string, payload interface{}, apiResponse interface{}) error {
@@ -41,6 +41,10 @@ func callAPI(server string, endPoint string, headers map[string]string, payload 
 }
 
 func CallGitlabAPI(endPoint string, headers map[string]string, payload interface{}, apiResponse interface{}) error {
-	headers["PRIVATE-TOKEN"] = getGitlabToken()
+	var err error
+	headers["PRIVATE-TOKEN"], err = getGitlabToken()
+	if err != nil {
+		return err
+	}
 	return callAPI(GitlabServer, endPoint, headers, payload, apiResponse)
 }

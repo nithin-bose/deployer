@@ -1,9 +1,10 @@
 package deploy
 
-import "deployer/pkg"
+import "errors"
 
-func ValidateEnvironment(environment string) {
+func ValidateEnvironment(environment string) error {
 	if environment != "staging" && environment != "production" {
-		pkg.FatalF("Unknown environment. Supported environments are staging and production \n")
+		return errors.New("Unknown environment. Supported environments are staging and production")
 	}
+	return nil
 }

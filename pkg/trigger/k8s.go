@@ -1,7 +1,7 @@
 package trigger
 
 import (
-	"log"
+	"errors"
 	"os"
 
 	"github.com/parnurzeal/gorequest"
@@ -14,7 +14,7 @@ func getK8sAuthFields() map[string]string {
 	return auth
 }
 
-func K8sDeployApp(environment string, app string, version string) {
+func K8sDeployApp(environment string, app string, version string) error {
 	req := gorequest.New()
 
 	body := getK8sAuthFields()
@@ -29,12 +29,11 @@ func K8sDeployApp(environment string, app string, version string) {
 		EndStruct(&resp)
 
 	if errs != nil {
-		log.Printf("%s", errs[0])
-		os.Exit(2)
+		return errs[0]
 	}
 
 	if !resp.Success {
-		log.Printf("%s", resp.ErrorMessage)
-		os.Exit(2)
+		return errors.New(resp.ErrorMessage)
 	}
+	return nil
 }
