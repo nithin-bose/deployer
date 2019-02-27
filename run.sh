@@ -2,8 +2,8 @@
 case "$1" in
 webhook)
     export DEPLOYER_DEFAULT_COMPOSE_FILE=docker-compose.yml
-    export DEPLOYER_WEBHOOK_ACCESS_KEY=key
-    export DEPLOYER_WEBHOOK_ACCESS_TOKEN=token
+    export DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY=key
+    export DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN=token
     export DEPLOYER_DEFAULT_COMPOSE_FILE_DIR=test
 	../../bin/deployer webhook run
 	;;

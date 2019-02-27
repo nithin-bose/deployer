@@ -22,7 +22,7 @@ func RenderSuccess(w http.ResponseWriter, data interface{}) {
 }
 
 func RenderError(w http.ResponseWriter, err error) {
-	log.Println("Error to render", err)
+	log.Println("Error to render:", err)
 	response := make(map[string]interface{})
 	response["success"] = false
 	response["error_message"] = err.Error()
@@ -33,20 +33,20 @@ func RenderError(w http.ResponseWriter, err error) {
 
 func authenticateDocker(key string, token string) error {
 	if key != os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN") {
-		log.Println("Docker authentication error")
+		log.Println("Docker webhook authentication error")
 		log.Println("Key:", key)
-		log.Println("Key:", token)
-		return errors.New("Authentication error")
+		log.Println("Token:", token)
+		return errors.New("Docker webhook authentication error")
 	}
 	return nil
 }
 
 func authenticateK8s(key string, token string) error {
 	if key != os.Getenv("DEPLOYER_WEBHOOK_K8S_ACCESS_KEY") || token != os.Getenv("DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN") {
-		log.Println("K8s authentication error")
+		log.Println("K8s webhook authentication error")
 		log.Println("Key:", key)
-		log.Println("Key:", token)
-		return errors.New("Authentication error")
+		log.Println("Token:", token)
+		return errors.New("K8s webhook authentication error")
 	}
 	return nil
 }
