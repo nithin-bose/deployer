@@ -6,7 +6,7 @@ import (
 	"text/template"
 )
 
-func CreateMobFile(fileName string, fileTemplate string, values interface{}) error {
+func CreateConfigFile(fileName string, fileTemplate string, values interface{}) error {
 	dirPath := os.Getenv("HOME") + string(os.PathSeparator) + ConfigFolder
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {

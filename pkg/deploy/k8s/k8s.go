@@ -104,7 +104,7 @@ func generateKubeConfig(base64CACrt string, base64Token string, clusterName stri
 		clusterName,
 	}
 
-	return pkg.CreateMobFile("kubeconfig", kubeConfigTpl, tplValues)
+	return pkg.CreateConfigFile("kubeconfig", kubeConfigTpl, tplValues)
 }
 
 func getServerURL() (string, error) {
