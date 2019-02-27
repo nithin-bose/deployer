@@ -2,7 +2,7 @@ package pkg
 
 const (
 	AppName          = "deployer"
-	Version          = "2.0.2"
+	Version          = "2.1.0"
 	ConfigFolder     = ".deployer"
 	ConfigFolderPath = "~/.deployer"
 
@@ -31,6 +31,6 @@ The changes are as follows:
 {{end}}
 
 ---
-Automated with github.com/nithin-bose/deployer
+Automated with https://gitlab.com/nithinbose/deployer
 `
 )
