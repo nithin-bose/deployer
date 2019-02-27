@@ -1,10 +1,9 @@
 package pkg
 
 const (
-	AppName          = "deployer"
-	Version          = "2.2.0"
-	ConfigFolder     = ".deployer"
-	ConfigFolderPath = "~/.deployer"
+	AppName      = "deployer"
+	Version      = "2.2.0"
+	ConfigFolder = ".deployer"
 
 	//Charts
 	// TraefikChart = "traefik-server"

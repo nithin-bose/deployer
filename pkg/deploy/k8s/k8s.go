@@ -168,7 +168,7 @@ func SetupKubeConfig(environment string) error {
 		return err
 	}
 
-	kubeConfig := fmt.Sprintf("%s/kube/%s", pkg.ConfigFolderPath, environment)
+	kubeConfig := fmt.Sprintf("%s/kube/%s", pkg.GetConfigFolderPath(), environment)
 	_, err = os.Stat(kubeConfig)
 	if err != nil {
 		return err

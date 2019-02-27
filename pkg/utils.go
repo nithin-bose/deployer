@@ -6,8 +6,12 @@ import (
 	"text/template"
 )
 
+func GetConfigFolderPath() string {
+	return os.Getenv("HOME") + string(os.PathSeparator) + ConfigFolder
+}
+
 func CreateConfigFile(fileName string, fileTemplate string, values interface{}) error {
-	dirPath := os.Getenv("HOME") + string(os.PathSeparator) + ConfigFolder
+	dirPath := GetConfigFolderPath()
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return err
