@@ -1,7 +1,6 @@
 package webhook
 
 import (
-	"deployer/pkg/deploy"
 	"deployer/pkg/deploy/k8s"
 	"encoding/json"
 	"errors"
@@ -33,10 +32,6 @@ func K8sDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		err = errors.New("Required field 'environment' cannot be empty")
 		RenderError(w, err)
 		return
-	}
-	err = deploy.ValidateEnvironment(req.Environment)
-	if err != nil {
-		RenderError(w, err)
 	}
 
 	if req.App == "" {

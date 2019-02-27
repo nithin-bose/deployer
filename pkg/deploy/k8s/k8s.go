@@ -4,6 +4,7 @@ import (
 	"deployer/pkg"
 	"encoding/base64"
 	"fmt"
+	"os"
 	"strings"
 	"unicode"
 
@@ -167,7 +168,13 @@ func SetupKubeConfig(environment string) error {
 		return err
 	}
 
-	command = fmt.Sprintf("cp %s/kube/%s ~/.kube/config", pkg.ConfigFolderPath, environment)
+	kubeConfig := fmt.Sprintf("%s/kube/%s", pkg.ConfigFolderPath, environment)
+	_, err = os.Stat(kubeConfig)
+	if err != nil {
+		return err
+	}
+
+	command = fmt.Sprintf("cp %s ~/.kube/config", kubeConfig)
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
 }

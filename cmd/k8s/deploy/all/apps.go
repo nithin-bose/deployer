@@ -1,7 +1,6 @@
 package all
 
 import (
-	"deployer/pkg/deploy"
 	"deployer/pkg/deploy/k8s"
 	"fmt"
 	"io/ioutil"
@@ -21,10 +20,6 @@ var appsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) != 1 {
 			log.Fatal("Command must have exactly 1 argument, environment.  \n")
-		}
-		err := deploy.ValidateEnvironment(args[0])
-		if err != nil {
-			log.Fatal(err)
 		}
 
 		dir := chartsDir + "charts/services/"

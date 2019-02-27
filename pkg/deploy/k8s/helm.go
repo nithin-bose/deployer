@@ -2,9 +2,9 @@ package k8s
 
 import (
 	"deployer/pkg"
-	"deployer/pkg/deploy"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 func InfraApp(directory string, cloudPlatorm string, app string) error {
@@ -16,25 +16,22 @@ func InfraApp(directory string, cloudPlatorm string, app string) error {
 
 func SystemApp(directory string, app string, environment string) error {
 	chart := GetSystemChart(directory, app)
-	valFile := GetValFilePath(chart, pkg.ProductionValsFile)
-	if environment != "production" {
-		valFile = GetValFilePath(chart, pkg.StagingValsFile)
+	valFilePath, err := GetValFilePath(chart, environment)
+	if err != nil {
+		return err
 	}
-	command := fmt.Sprintf("helm upgrade -f %s --install %s-%s %s --namespace kube-system", valFile, app, environment, chart)
+	command := fmt.Sprintf("helm upgrade -f %s --install %s-%s %s --namespace kube-system", valFilePath, app, environment, chart)
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
 }
 
 func DeployServiceApp(directory string, force bool, ci bool, environment string, app string, version string) error {
-	err := deploy.ValidateEnvironment(environment)
-	if err != nil {
-		return err
-	}
-	if !force && environment == "production" && version == "latest" {
+	if !force && strings.Contains(environment, "production") && version == "latest" {
 		return errors.New("Only versioned releases should be deployed to production")
 	}
 	fmt.Sprintf("Deploying %s... ", environment)
 
+	var err error
 	if ci {
 		err = SetupKubeConfig(environment)
 		if err != nil {
@@ -44,12 +41,12 @@ func DeployServiceApp(directory string, force bool, ci bool, environment string,
 
 	var command string
 	chart := GetServiceChart(directory, app)
-	valFile := GetValFilePath(chart, pkg.ProductionValsFile)
-	if environment != "production" {
-		valFile = GetValFilePath(chart, pkg.StagingValsFile)
+	valFilePath, err := GetValFilePath(chart, environment)
+	if err != nil {
+		return err
 	}
 
-	command = fmt.Sprintf("helm upgrade -f %s --set image.tag=%s --install %s-%s %s", valFile, version, app, environment, chart)
+	command = fmt.Sprintf("helm upgrade -f %s --set image.tag=%s --install %s-%s %s", valFilePath, version, app, environment, chart)
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
 }

@@ -2,7 +2,7 @@ package pkg
 
 const (
 	AppName          = "deployer"
-	Version          = "2.1.0"
+	Version          = "2.2.0"
 	ConfigFolder     = ".deployer"
 	ConfigFolderPath = "~/.deployer"
 
@@ -11,10 +11,6 @@ const (
 
 	//Helm user service account
 	HelmServiceUser = "helm"
-
-	// Helm deploy constants
-	StagingValsFile    = "values.yaml"
-	ProductionValsFile = "prod-values.yaml"
 
 	// Gitlab
 	GitlabServer = "https://gitlab.com/api/v4"

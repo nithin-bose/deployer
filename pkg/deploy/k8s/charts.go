@@ -1,5 +1,10 @@
 package k8s
 
+import (
+	"fmt"
+	"os"
+)
+
 func GetServiceChart(directory string, app string) string {
 	return directory + "charts/services/" + app
 }
@@ -19,6 +24,12 @@ func GetAdminPanelChart(directory string, app string) string {
 	return directory + "charts/admin-panels/" + app
 }
 
-func GetValFilePath(chart string, file string) string {
-	return chart + "/" + file
+func GetValFilePath(chart string, environment string) (string, error) {
+	valFile := fmt.Sprintf("%s-values.yaml", environment)
+	filePath := chart + "/" + valFile
+	_, err := os.Stat(filePath)
+	if err != nil {
+		return "", err
+	}
+	return filePath, nil
 }
