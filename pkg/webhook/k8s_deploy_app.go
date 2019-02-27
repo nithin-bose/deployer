@@ -49,6 +49,7 @@ func K8sDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 	err = k8s.DeployServiceApp(chartsDir, false, true, req.Environment, req.App, req.Version)
 	if err != nil {
 		RenderError(w, err)
+		return
 	}
 	RenderSuccess(w, nil)
 }
