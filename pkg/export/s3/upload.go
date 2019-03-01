@@ -15,7 +15,7 @@ type UploadDetails struct {
 	Location string `json:"location"`
 }
 
-func Upload(filePath string) (*UploadDetails, error) {
+func Upload(filePath string, makePublic bool) (*UploadDetails, error) {
 	// Create an uploader with the session and default options
 	uploader := s3manager.NewUploader(awsSession)
 
@@ -32,11 +32,15 @@ func Upload(filePath string) (*UploadDetails, error) {
 	}
 
 	key := filepath.Base(filePath)
-	result, err := uploader.Upload(&s3manager.UploadInput{
+	options := &s3manager.UploadInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(key),
 		Body:   f,
-	})
+	}
+	if makePublic {
+		options.ACL = aws.String("public-read")
+	}
+	result, err := uploader.Upload(options)
 	if err != nil {
 		return nil, err
 	}

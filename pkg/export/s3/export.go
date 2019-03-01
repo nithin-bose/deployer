@@ -3,6 +3,7 @@ package s3
 import (
 	"deployer/pkg"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -26,9 +27,11 @@ func ExportDockerImageToS3(repo string, tag string) (*UploadDetails, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer os.RemoveAll(outputFilePath)
+
 	err = Init()
 	if err != nil {
 		return nil, err
 	}
-	return Upload(outputFilePath)
+	return Upload(outputFilePath, true)
 }
