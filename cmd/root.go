@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"deployer/cmd/docker"
+	"deployer/cmd/export"
 	"deployer/cmd/k8s"
 	"deployer/cmd/promote"
 	"deployer/cmd/release"
@@ -16,6 +17,7 @@ func init() {
 	RootCmd.AddCommand(release.RootCmd)
 	RootCmd.AddCommand(promote.RootCmd)
 	RootCmd.AddCommand(webhook.RootCmd)
+	RootCmd.AddCommand(export.RootCmd)
 }
 
 // RootCmd is the root CLI command
