@@ -21,7 +21,7 @@ var dockerImageCmd = &cobra.Command{
 		}
 		uploadDetails, err := s3.ExportDockerImageToS3(args[0], args[1])
 		if err != nil {
-			log.Fatal("An error occurred:\n %s \n", err.Error())
+			log.Fatalf("An error occurred:\n %s \n", err.Error())
 		}
 		fmt.Println("Successfully uploaded to", uploadDetails.Location)
 	},
