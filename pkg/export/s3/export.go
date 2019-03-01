@@ -13,9 +13,16 @@ func ExportDockerImageToS3(repo string, tag string) (*UploadDetails, error) {
 	projectName := r[len(r)-1]
 	outputFilePath := fmt.Sprintf("/tmp/%s-%s.tar", projectName, tag)
 
-	command := fmt.Sprintf("docker image save -o %s %s", outputFilePath, repoWithTag)
+	command := fmt.Sprintf("docker image pull %s", repoWithTag)
 	fmt.Println(command, " \n")
 	err := pkg.Execute(command)
+	if err != nil {
+		return nil, err
+	}
+
+	command = fmt.Sprintf("docker image save -o %s %s", outputFilePath, repoWithTag)
+	fmt.Println(command, " \n")
+	err = pkg.Execute(command)
 	if err != nil {
 		return nil, err
 	}
