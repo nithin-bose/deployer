@@ -30,6 +30,7 @@ var dockerImagesCmd = &cobra.Command{
 		}
 		defer f.Close()
 
+		var s3URLs []string
 		buf := bufio.NewReader(f)
 		for {
 			l, _, err := buf.ReadLine()
@@ -48,7 +49,13 @@ var dockerImagesCmd = &cobra.Command{
 			if err != nil {
 				log.Fatalf("An error occurred:\n %s \n", err.Error())
 			}
+			s3URLs = append(s3URLs, uploadDetails.Location)
 			fmt.Printf("%s successfully uploaded to %s \n", line, uploadDetails.Location)
+		}
+
+		fmt.Printf("\n URLs: \n")
+		for _, url := range s3URLs {
+			fmt.Println(url)
 		}
 	},
 }
