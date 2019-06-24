@@ -21,8 +21,7 @@ create-binaries:
     - CGO_ENABLED=0 go install $CI_PROJECT_NAME
     - mv $GOPATH/bin/$CI_PROJECT_NAME ./deployment
     - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go install $CI_PROJECT_NAME
-    - ls -l $GOPATH/bin/
-    - mv $GOPATH/bin/$CI_PROJECT_NAME ./deployment/$CI_PROJECT_NAME-darwin
+    - mv $GOPATH/bin/darwin_amd64 ./deployment/$CI_PROJECT_NAME-darwin
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
     paths:
