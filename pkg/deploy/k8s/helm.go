@@ -25,6 +25,17 @@ func SystemApp(directory string, app string, environment string) error {
 	return pkg.Execute(command)
 }
 
+func CommonApp(directory string, app string, environment string) error {
+	chart := GetCommonChart(directory, app)
+	valFilePath, err := GetValFilePath(chart, environment)
+	if err != nil {
+		return err
+	}
+	command := fmt.Sprintf("helm upgrade -f %s --install %s-%s %s", valFilePath, app, environment, chart)
+	fmt.Println(command, " \n")
+	return pkg.Execute(command)
+}
+
 func DeployServiceApp(directory string, force bool, ci bool, environment string, app string, version string) error {
 	if !force && strings.Contains(environment, "production") && version == "latest" {
 		return errors.New("Only versioned releases should be deployed to production")

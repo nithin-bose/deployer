@@ -13,6 +13,10 @@ func GetSystemChart(directory string, app string) string {
 	return directory + "charts/system/" + app
 }
 
+func GetCommonChart(directory string, app string) string {
+	return directory + "charts/common/" + app
+}
+
 func GetInfraChart(directory string, cloudPlatorm string, app string) string {
 	if app == "setup" {
 		app = app + "-" + cloudPlatorm

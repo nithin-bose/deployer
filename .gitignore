@@ -28,3 +28,5 @@ _testmain.go
 # IDE files
 *.iml
 .idea
+
+deployer
