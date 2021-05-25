@@ -109,7 +109,7 @@ func generateKubeConfig(base64CACrt string, base64Token string, clusterName stri
 }
 
 func getServerURL() (string, error) {
-	command := "kubectl cluster-info | grep master | awk '{print $NF}'"
+	command := "kubectl cluster-info | grep control | awk '{print $NF}'"
 	fmt.Println(command, " \n")
 	rawServerUrl, err := pkg.ExecuteWithOutput(command)
 	if err != nil {
