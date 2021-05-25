@@ -18,9 +18,9 @@ create-binaries:
   image: golang:latest
   script:
     - ln -s $(pwd) $GOPATH/src/$CI_PROJECT_NAME
-    - CGO_ENABLED=0 go install $CI_PROJECT_NAME
+    - CGO_ENABLED=0 go install $CI_PROJECT_NAME@latest
     - mv $GOPATH/bin/$CI_PROJECT_NAME ./deployment
-    - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go install $CI_PROJECT_NAME
+    - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go install $CI_PROJECT_NAME@latest
     - mv $GOPATH/bin/darwin_amd64 ./deployment/$CI_PROJECT_NAME-darwin
   artifacts:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
