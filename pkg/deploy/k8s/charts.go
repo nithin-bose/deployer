@@ -37,3 +37,13 @@ func GetValFilePath(chart string, environment string) (string, error) {
 	}
 	return filePath, nil
 }
+
+func GetDefaultValFilePath(chart string) (string, error) {
+	valFile := "values.yaml"
+	filePath := chart + "/" + valFile
+	_, err := os.Stat(filePath)
+	if err != nil {
+		return "", err
+	}
+	return filePath, nil
+}

@@ -16,22 +16,34 @@ func InfraApp(directory string, cloudPlatorm string, app string) error {
 
 func SystemApp(directory string, app string, environment string) error {
 	chart := GetSystemChart(directory, app)
+	
+	defaultValFilePath, err := GetDefaultValFilePath(chart)
+	if err != nil {
+		return err
+	}
+	
 	valFilePath, err := GetValFilePath(chart, environment)
 	if err != nil {
 		return err
 	}
-	command := fmt.Sprintf("helm upgrade -f %s --install %s-%s %s --namespace kube-system", valFilePath, app, environment, chart)
+	command := fmt.Sprintf("helm upgrade -f %s -f %s --install %s-%s %s --namespace kube-system", defaultValFilePath, valFilePath, app, environment, chart)
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
 }
 
 func CommonApp(directory string, app string, environment string) error {
 	chart := GetCommonChart(directory, app)
+
+	defaultValFilePath, err := GetDefaultValFilePath(chart)
+	if err != nil {
+		return err
+	}
+
 	valFilePath, err := GetValFilePath(chart, environment)
 	if err != nil {
 		return err
 	}
-	command := fmt.Sprintf("helm upgrade -f %s --install %s-%s %s", valFilePath, app, environment, chart)
+	command := fmt.Sprintf("helm upgrade -f %s -f %s --install %s-%s %s", defaultValFilePath, valFilePath, app, environment, chart)
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
 }
@@ -52,12 +64,18 @@ func DeployServiceApp(directory string, force bool, ci bool, environment string,
 
 	var command string
 	chart := GetServiceChart(directory, app)
+
+	defaultValFilePath, err := GetDefaultValFilePath(chart)
+	if err != nil {
+		return err
+	}
+
 	valFilePath, err := GetValFilePath(chart, environment)
 	if err != nil {
 		return err
 	}
 
-	command = fmt.Sprintf("helm upgrade -f %s --set image.tag=%s --install %s-%s %s", valFilePath, version, app, environment, chart)
+	command = fmt.Sprintf("helm upgrade -f %s -f %s --set image.tag=%s --install %s-%s %s", defaultValFilePath, valFilePath, version, app, environment, chart)
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
 }

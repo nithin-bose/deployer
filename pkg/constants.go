@@ -2,7 +2,7 @@ package pkg
 
 const (
 	AppName      = "deployer"
-	Version      = "3.4.2"
+	Version      = "3.5.0"
 	ConfigFolder = ".deployer"
 
 	//Charts
