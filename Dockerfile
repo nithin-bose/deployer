@@ -1,4 +1,4 @@
-FROM golang:latest as builder
+FROM golang:1.8 as builder
 RUN mkdir -p $GOPATH/src/deployer
 WORKDIR $GOPATH/src/deployer
 ADD . .
