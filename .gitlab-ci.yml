@@ -17,6 +17,7 @@ create-binaries:
   stage: build
   image: golang:1.18
   script:
+    - go mod download
     # Linux x86_64
     - CGO_ENABLED=0 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $GOPATH/bin/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-linux-x86_64/latest/$CI_PROJECT_NAME"'
