@@ -161,15 +161,15 @@ func DeletePullSecret() error {
 }
 
 func SetupKubeConfig(environment string) error {
-	command := "rm -rf ~/.kube && mkdir ~/.kube"
-	fmt.Println(command, " \n")
-	err := pkg.Execute(command)
+	kubeConfig := fmt.Sprintf("%s/kube/%s", pkg.GetConfigFolderPath(), environment)
+	_, err := os.Stat(kubeConfig)
 	if err != nil {
 		return err
 	}
 
-	kubeConfig := fmt.Sprintf("%s/kube/%s", pkg.GetConfigFolderPath(), environment)
-	_, err = os.Stat(kubeConfig)
+	command := "rm -rf ~/.kube && mkdir ~/.kube"
+	fmt.Println(command, " \n")
+	err = pkg.Execute(command)
 	if err != nil {
 		return err
 	}
