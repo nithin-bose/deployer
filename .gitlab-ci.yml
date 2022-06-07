@@ -8,23 +8,26 @@ create-latest-image:
    - docker:dind
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker build --build-arg DEPLOYER_VERSION=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:latest
   only:
     - master
 
 create-binaries:
   stage: build
-  image: golang:1.8
+  image: golang:1.18
   script:
-    - ln -s $(pwd) $GOPATH/src/$CI_PROJECT_NAME
-    - CGO_ENABLED=0 go install $CI_PROJECT_NAME
-    - mv $GOPATH/bin/$CI_PROJECT_NAME ./deployment
-    - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go install $CI_PROJECT_NAME
-    - mv $GOPATH/bin/darwin_amd64 ./deployment/$CI_PROJECT_NAME-darwin
-  artifacts:
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
-    paths:
-      - deployment/
+    # Linux x86_64
+    - CGO_ENABLED=0 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $GOPATH/bin/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-linux-x86_64/latest/$CI_PROJECT_NAME"'
+    - rm $GOPATH/bin/$CI_PROJECT_NAME
+    # Darwin x86_64
+    - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $$GOPATH/bin/darwin_amd64/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-darwin-x86_64/latest/$CI_PROJECT_NAME"'
+    - rm $GOPATH/bin/darwin_amd64/$CI_PROJECT_NAME
+    # Darwin arm64
+    - CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $$GOPATH/bin/darwin_arm64/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-darwin-arm64/latest/$CI_PROJECT_NAME"'
+    - rm $GOPATH/bin/darwin_arm64/$CI_PROJECT_NAME
   only:
     - master

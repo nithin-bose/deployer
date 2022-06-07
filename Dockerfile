@@ -1,8 +1,7 @@
-FROM golang:1.8 as builder
-RUN mkdir -p $GOPATH/src/deployer
-WORKDIR $GOPATH/src/deployer
+FROM golang:1.18 as builder
 ADD . .
-RUN CGO_ENABLED=0 go install deployer && mv $GOPATH/bin/deployer /bin/deployer
+ARG DEPLOYER_VERSION
+RUN CGO_ENABLED=0 go install -ldflags "-X deployer/pkg.Version=${DEPLOYER_VERSION}" deployer && mv $GOPATH/bin/deployer /bin/deployer
 
 FROM alpine
 RUN apk add --no-cache git
