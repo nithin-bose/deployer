@@ -1,8 +1,9 @@
 package pkg
 
+var Version = "dev"
+
 const (
 	AppName      = "deployer"
-	Version      = "dev"
 	ConfigFolder = ".deployer"
 
 	//Charts
