@@ -14,7 +14,7 @@ import (
 var cluster string
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&cluster, "cluster", "c", "", "Cluster to use. If not specified, uses default cluster configured by kubectl")
+	RootCmd.PersistentFlags().StringVarP(&cluster, "cluster", "C", "", "Cluster to use. If not specified, uses default cluster configured by kubectl")
 	RootCmd.AddCommand(create.RootCmd)
 	RootCmd.AddCommand(delete.RootCmd)
 	RootCmd.AddCommand(deploy.RootCmd)
