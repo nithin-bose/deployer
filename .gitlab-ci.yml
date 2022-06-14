@@ -22,6 +22,10 @@ create-binaries:
     - CGO_ENABLED=0 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $GOPATH/bin/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-linux-x86_64/latest/$CI_PROJECT_NAME"'
     - rm $GOPATH/bin/$CI_PROJECT_NAME
+    # Linux arm64
+    - CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $GOPATH/bin/linux_arm64/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-linux-arm64/latest/$CI_PROJECT_NAME"'
+    - rm $GOPATH/bin/linux_arm64/$CI_PROJECT_NAME
     # Darwin x86_64
     - CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go install -ldflags "-X $CI_PROJECT_NAME/pkg.Version=$CI_COMMIT_SHA" $CI_PROJECT_NAME
     - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $GOPATH/bin/darwin_amd64/$CI_PROJECT_NAME "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/$CI_PROJECT_NAME-darwin-x86_64/latest/$CI_PROJECT_NAME"'
