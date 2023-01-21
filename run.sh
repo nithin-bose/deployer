@@ -1,10 +1,10 @@
 #!/bin/bash
 case "$1" in
 webhook)
-    export DEPLOYER_DEFAULT_COMPOSE_FILE=docker-compose.yml
+    export DEPLOYER_COMPOSE_FILE=docker-compose.yml
     export DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY=key
     export DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN=token
-    export DEPLOYER_DEFAULT_COMPOSE_FILE_DIR=test
+    export DEPLOYER_DOCKER_STACKS_DIR=/root/docker-stacks
 	../../bin/deployer webhook run
 	;;
 trigger)

@@ -11,18 +11,14 @@ import (
 
 func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	composeFile := os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE")
+	composeFile := os.Getenv("DEPLOYER_COMPOSE_FILE")
 	if composeFile == "" {
-		err = errors.New("DEPLOYER_DEFAULT_COMPOSE_FILE not set")
-		RenderError(w, err)
-		return
+		composeFile = "docker-compose.yml"
 	}
 
-	composeFileDir := os.Getenv("DEPLOYER_DEFAULT_COMPOSE_FILE_DIR")
-	if composeFileDir == "" {
-		err = errors.New("DEPLOYER_DEFAULT_COMPOSE_FILE_DIR not set")
-		RenderError(w, err)
-		return
+	dockerStacksDir := os.Getenv("DEPLOYER_DOCKER_STACKS_DIR")
+	if dockerStacksDir == "" {
+		dockerStacksDir = "/root/docker-stacks"
 	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -47,12 +43,14 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	composeFileDir := dockerStacksDir + string(os.PathListSeparator) + req.App
 	err = os.Chdir(composeFileDir)
 	if err != nil {
 		RenderError(w, err)
 		return
 	}
-	err = docker.DeployServiceApp(composeFile, req.App)
+
+	err = docker.DeployServiceApp(composeFile, req.Service)
 	if err != nil {
 		RenderError(w, err)
 		return

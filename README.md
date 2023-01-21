@@ -43,8 +43,8 @@
 
   For docker deployments
   ```
-  DEPLOYER_DEFAULT_COMPOSE_FILE
-  DEPLOYER_DEFAULT_COMPOSE_FILE_DIR
+  DEPLOYER_COMPOSE_FILE (defaults to `docker-compose.yml`)
+  DEPLOYER_DOCKER_STACKS_DIR (defaults to `/root/docker-stacks`)
   ```
 
   For k8s deployments

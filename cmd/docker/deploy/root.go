@@ -5,11 +5,13 @@ import (
 )
 
 var composeFile string
-var composeFileDir string
+var appsDir string
+var service string
 
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&composeFile, "compose-file", "f", "", "Path where the docker compose file is present")
-	RootCmd.PersistentFlags().StringVarP(&composeFileDir, "compose-file-dir", "d", "", "Dir where docker-compose is to be run")
+	RootCmd.PersistentFlags().StringVarP(&appsDir, "apps-dir", "d", "", "Dir where docker compose app folders are present")
+	RootCmd.PersistentFlags().StringVarP(&service, "service", "s", "", "Service in the app")
 }
 
 var RootCmd = &cobra.Command{
