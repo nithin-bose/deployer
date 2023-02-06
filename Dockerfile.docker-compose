@@ -18,5 +18,6 @@ COPY --from=builder /bin/deployer /bin/deployer
 RUN mkdir /root/docker-stacks
 WORKDIR /root/docker-stacks
 EXPOSE 3000
-CMD /bin/deployer webhook run
+ENTRYPOINT /bin/deployer 
+CMD webhook run
 
