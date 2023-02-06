@@ -5,18 +5,18 @@ services:
     restart: unless-stopped
     environment:
       - DEPLOYER_WEBHOOK_PORT=3000
-      - DEPLOYER_WEBHOOK_K8S_ACCESS_KEY=<key>
-      - DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN=<token>
+      - DEPLOYER_WEBHOOK_K8S_ACCESS_KEY=${DEPLOYER_WEBHOOK_K8S_ACCESS_KEY}
+      - DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN=${DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN}
     volumes:
       - ./deployer:/root/.deployer/
     networks:
-      - server
+      - traefik
       - default
     labels:
       - 'traefik.enable=true'
-      - 'traefik.backend=deployer-k1'
-      - 'traefik.frontend.rule=Host:deployer.example.com'
-      - 'traefik.docker.network=traefik_webgateway'
+      - 'traefik.backend=${DEPLOYER_BACKEND}'
+      - 'traefik.frontend.rule=Host:${DEPLOYER_BACKEND}.${DEPLOYER_ROOT_DOMAIN}'
+      - 'traefik.docker.network=traefik_default'
       - 'com.centurylinklabs.watchtower.enable=true'
   
   watchtower:
@@ -31,6 +31,6 @@ services:
       - 'traefik.enable=false'
 
 networks:
-  server:
-    external:
-      name: traefik_webgateway
+  traefik:
+    name: traefik_default
+    external: true

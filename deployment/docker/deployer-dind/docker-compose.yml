@@ -5,23 +5,22 @@ services:
     restart: unless-stopped
     environment:
       - DEPLOYER_WEBHOOK_PORT=3000
-      - DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY=<key>
-      - DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN=<token>
+      - DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY=${DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY}
+      - DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN=${DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN}
     volumes:
       - ~/.docker:/root/.docker
-      - ./docker-stacks:/root/docker-stacks
+      - ${DEPLOYER_DOCKER_STACKS_PATH}:/root/docker-stacks
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - server
+      - traefik
       - default
     labels:
       - 'traefik.enable=true'
-      - 'traefik.backend=deployer-k1'
-      - 'traefik.frontend.rule=Host:deployer.example.com'
-      - 'traefik.docker.network=traefik_webgateway'
-      - 'com.centurylinklabs.watchtower.enable=true'
+      - 'traefik.backend=${DEPLOYER_BACKEND}'
+      - 'traefik.frontend.rule=Host:${DEPLOYER_BACKEND}.${DEPLOYER_ROOT_DOMAIN}'
+      - 'traefik.docker.network=traefik_default'
 
 networks:
-  server:
-    external:
-      name: traefik_webgateway
+  traefik:
+    name: traefik_default
+    external: true
