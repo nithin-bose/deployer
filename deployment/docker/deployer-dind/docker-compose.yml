@@ -4,7 +4,7 @@ services:
     image: registry.gitlab.com/nithinbose/deployer:latest-docker-compose
     restart: unless-stopped
     environment:
-      - DEPLOYER_WEBHOOK_PORT=3000
+      - DEPLOYER_WEBHOOK_PORT=${DEPLOYER_WEBHOOK_PORT}
       - DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY=${DEPLOYER_WEBHOOK_DOCKER_ACCESS_KEY}
       - DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN=${DEPLOYER_WEBHOOK_DOCKER_ACCESS_TOKEN}
     volumes:
@@ -16,11 +16,12 @@ services:
       - default
     labels:
       - 'traefik.enable=true'
-      - 'traefik.backend=${DEPLOYER_BACKEND}'
-      - 'traefik.frontend.rule=Host:${DEPLOYER_BACKEND}.${DEPLOYER_ROOT_DOMAIN}'
-      - 'traefik.docker.network=traefik_default'
+      - "traefik.http.routers.${DEPLOYER_BACKEND}.rule=Host(`${DEPLOYER_BACKEND}.${DEPLOYER_ROOT_DOMAIN}`)"
+      - "traefik.http.routers.${DEPLOYER_BACKEND}.service=${DEPLOYER_BACKEND}"
+      - "traefik.http.services.${DEPLOYER_BACKEND}.loadbalancer.server.port=${DEPLOYER_WEBHOOK_PORT}"
+      - 'traefik.docker.network=${TRAEFIK_NETWORK}'
 
 networks:
   traefik:
-    name: traefik_default
+    name: ${TRAEFIK_NETWORK}
     external: true
