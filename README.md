@@ -79,3 +79,14 @@
   DEPLOYER_WEBHOOK_K8S_ACCESS_KEY
   DEPLOYER_WEBHOOK_K8S_ACCESS_TOKEN
   ```
+
+  ### Trigger commands - To be used in CI/CD
+  For k8s 
+  ```
+  deployer webhook trigger deploy k8s $ENVIRONMENT $CI_PROJECT_NAME $IMAGE_TAG
+  ```
+
+  For docker deployments
+  ```
+  deployer webhook trigger deploy docker $CI_PROJECT_NAME
+  ```
