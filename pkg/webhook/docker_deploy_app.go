@@ -43,7 +43,7 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	composeFileDir := dockerStacksDir + string(os.PathListSeparator) + req.App
+	composeFileDir := dockerStacksDir + string(os.PathSeparator) + req.App
 	err = os.Chdir(composeFileDir)
 	if err != nil {
 		RenderError(w, err)
