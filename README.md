@@ -69,5 +69,5 @@
 
 ## How to deploy
 
-1. [As a SystemD service](deployment/systemd/README.md)
-2. [With Docker Compose](deployment/docker-compose/README.md)
+1. [As a SystemD service](deployment/systemd/)
+2. [With Docker Compose](deployment/docker-compose/)
