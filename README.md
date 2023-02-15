@@ -1,36 +1,12 @@
 # Deployer
 
 # Prerequisites
-* [Golang](https://golang.org/dl/)  (1.8.1+)
-* [dep](https://github.com/golang/dep) for dependency management, this project uses vendoring so all the dependencies are part of the source.
+* [Golang](https://golang.org/dl/)  (1.14+)
 
-# How to run
+# How to Build
 
-1. Create the following directory structure, where ``deployer`` is refered as project root henceforth
-    ```
-    deployer
-    |-- bin
-    |-- pkg
-    |__ src
-    ```
-
-2. Set the project root as the ``GOPATH`` environment variable using the following commands and add ``GOPATH/bin/`` to PATH.
-    ```
-    # Assuming you are in the project root
-    $ export GOPATH=$(pwd)
-    $ export PATH=$PATH:~GOPATH/bin/
-    ```
-
-3. Clone this repo inside the ``src`` folder. The resulting directory structure is the following:
-    ```
-    deployer
-    |-- bin
-    |-- pkg
-    |__ src
-      |__ deployer
-    ```
-
-4. Run the following to build.
+1. Clone this repo 
+2. Run the following to build.
     ```
     $ go install deployer
     ```
@@ -90,3 +66,8 @@
   ```
   deployer webhook trigger deploy docker $CI_PROJECT_NAME
   ```
+
+## How to deploy
+
+1. [As a SystemD service](deployment/systemd/README.md)
+2. [With Docker Compose](deployment/docker-compose/README.md)
