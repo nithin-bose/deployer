@@ -14,12 +14,13 @@ func getDockerAuthFields() map[string]string {
 	return auth
 }
 
-func DockerDeployApp(app string, service string) error {
+func DockerDeployApp(dockerStacksDir string, app string, service string) error {
 	req := gorequest.New()
 
 	body := getDockerAuthFields()
 	body["app"] = app
 	body["service"] = service
+	body["docker_stacks_dir"] = dockerStacksDir
 
 	url := os.Getenv("DEPLOYER_WEBHOOK_DOCKER_URL") + "/docker/deploy/app"
 	resp := WebhookResponse{}

@@ -9,9 +9,11 @@ import (
 )
 
 var service string
+var dockerStacksDir string
 
 func init() {
 	dockerCmd.PersistentFlags().StringVarP(&service, "service", "s", "", "Service in the app")
+	dockerCmd.PersistentFlags().StringVarP(&dockerStacksDir, "docker-stacks-dir", "d", "", "Directory where docker compose app folders are present")
 	RootCmd.AddCommand(dockerCmd)
 }
 
@@ -24,7 +26,7 @@ var dockerCmd = &cobra.Command{
 		}
 
 		fmt.Sprintf("Deploying %s... ", args[0])
-		err := trigger.DockerDeployApp(args[0], service)
+		err := trigger.DockerDeployApp(dockerStacksDir, args[0], service)
 		if err != nil {
 			log.Fatal(err)
 		}

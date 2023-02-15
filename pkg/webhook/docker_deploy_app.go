@@ -11,15 +11,7 @@ import (
 
 func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
-	composeFile := os.Getenv("DEPLOYER_COMPOSE_FILE")
-	if composeFile == "" {
-		composeFile = "docker-compose.yml"
-	}
 
-	dockerStacksDir := os.Getenv("DEPLOYER_DOCKER_STACKS_DIR")
-	if dockerStacksDir == "" {
-		dockerStacksDir = "/root/docker-stacks"
-	}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		RenderError(w, err)
@@ -43,14 +35,20 @@ func DockerDeployAppHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	composeFileDir := dockerStacksDir + string(os.PathSeparator) + req.App
-	err = os.Chdir(composeFileDir)
-	if err != nil {
-		RenderError(w, err)
-		return
+	dockerStacksDir := os.Getenv("DEPLOYER_DOCKER_STACKS_DIR")
+	if dockerStacksDir == "" {
+		dockerStacksDir = "/root/docker-stacks"
+	}
+	if req.DockerStacksDir != "" {
+		dockerStacksDir = req.DockerStacksDir
 	}
 
-	err = docker.DeployServiceApp(composeFile, req.Service)
+	composeFile := os.Getenv("DEPLOYER_COMPOSE_FILE")
+	if composeFile == "" {
+		composeFile = "docker-compose.yml"
+	}
+
+	err = docker.DeployServiceApp(dockerStacksDir, composeFile, req.App, req.Service)
 	if err != nil {
 		RenderError(w, err)
 		return

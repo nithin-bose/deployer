@@ -5,12 +5,12 @@ import (
 )
 
 var composeFile string
-var appsDir string
+var dockerStacksDir string
 var service string
 
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&composeFile, "compose-file", "f", "", "Path where the docker compose file is present")
-	RootCmd.PersistentFlags().StringVarP(&appsDir, "apps-dir", "d", "", "Dir where docker compose app folders are present")
+	RootCmd.PersistentFlags().StringVarP(&dockerStacksDir, "docker-stacks-dir", "d", ".", "Directory where docker compose app folders are present")
 	RootCmd.PersistentFlags().StringVarP(&service, "service", "s", "", "Service in the app")
 }
 

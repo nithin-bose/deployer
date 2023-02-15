@@ -7,8 +7,9 @@ type Auth struct {
 
 type DockerRequest struct {
 	Auth
-	App     string `json:"app"`
-	Service string `json:"service"`
+	App             string `json:"app"`
+	Service         string `json:"service"`
+	DockerStacksDir string `json:"docker_stacks_dir"`
 }
 
 type K8sRequest struct {

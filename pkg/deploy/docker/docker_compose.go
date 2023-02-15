@@ -3,11 +3,18 @@ package docker
 import (
 	"deployer/pkg"
 	"fmt"
+	"os"
 )
 
-func DeployServiceApp(composeFile string, service string) error {
+func DeployServiceApp(dockerStacksDir string, composeFile string, app string, service string) error {
 	var command string
 	var err error
+
+	composeFileDir := dockerStacksDir + string(os.PathSeparator) + app
+	err = os.Chdir(composeFileDir)
+	if err != nil {
+		return err
+	}
 
 	if composeFile != "" {
 		command = fmt.Sprintf("docker compose -f %s pull %s", composeFile, service)
