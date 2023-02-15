@@ -28,9 +28,9 @@ func DeployServiceApp(dockerStacksDir string, composeFile string, app string, se
 	}
 
 	if composeFile != "" {
-		command = fmt.Sprintf("docker compose -f %s up -d %s", composeFile, service)
+		command = fmt.Sprintf("docker compose -f %s up --remove-orphans -d %s", composeFile, service)
 	} else {
-		command = fmt.Sprintf("docker compose up -d %s", service)
+		command = fmt.Sprintf("docker compose up --remove-orphans -d %s", service)
 	}
 	fmt.Println(command, " \n")
 	return pkg.Execute(command)
