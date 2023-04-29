@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"text/template"
@@ -8,6 +9,20 @@ import (
 
 func GetConfigFolderPath() string {
 	return os.Getenv("HOME") + string(os.PathSeparator) + ConfigFolder
+}
+
+func FormatString(textTemplate string, values interface{}) (string, error) {
+	tmpl, err := template.New("test").Parse(textTemplate)
+	if err != nil {
+		return "", err
+	}
+
+	output := new(bytes.Buffer)
+	err = tmpl.Execute(output, values)
+	if err != nil {
+		return "", err
+	}
+	return output.String(), nil
 }
 
 func CreateConfigFile(fileName string, fileTemplate string, values interface{}) error {

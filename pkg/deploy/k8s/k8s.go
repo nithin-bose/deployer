@@ -37,14 +37,33 @@ func CreateHelmServiceAccount(userName string) error {
 }
 
 func CreateSAKubeConfig(userName string, clusterName string) error {
-	command := fmt.Sprintf("kubectl get secret --namespace kube-system | grep %s-token- | awk '{print $1}'", userName)
+	helmUserTokenSecretCmdTplArr := []string{
+		`kubectl apply -f - <<EOF`,
+		`apiVersion: v1`,
+		`kind: Secret`,
+		`metadata:`,
+		`  	name: {{.UserName}}-token`,
+		`	annotations:`,
+		`		kubernetes.io/service-account.name: {{.UserName}}`,
+		`type: kubernetes.io/service-account-token`,
+		`EOF`,
+	}
+	helmUserTokenSecretCmdTpl := strings.Join(helmUserTokenSecretCmdTplArr, "\n") + "\n"
+
+	tplValues := map[string]string{
+		"UserName": userName,
+	}
+	command, err := pkg.FormatString(helmUserTokenSecretCmdTpl, tplValues)
+	if err != nil {
+		return err
+	}
 	fmt.Println(command, " \n")
-	secretName, err := pkg.ExecuteWithOutput(command)
+	err = pkg.Execute(command)
 	if err != nil {
 		return err
 	}
 
-	command = fmt.Sprintf("kubectl get secret --namespace kube-system %s -o yaml", secretName)
+	command = fmt.Sprintf("kubectl get secret --namespace kube-system %s-token -o yaml", userName)
 	fmt.Println(command, " \n")
 	secret, err := pkg.ExecuteWithOutput(command)
 	if err != nil {
