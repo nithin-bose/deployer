@@ -1,4 +1,4 @@
-FROM golang:1.18 as builder
+FROM golang:1.20 as builder
 RUN mkdir -p /src/deployer
 WORKDIR /src/deployer
 
