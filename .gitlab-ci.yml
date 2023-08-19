@@ -7,7 +7,7 @@ create-latest-image:
   services:
    - docker:dind
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build --build-arg DEPLOYER_VERSION=$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:latest
   only:
@@ -19,7 +19,7 @@ create-latest-docker-compose-image:
   services:
    - docker:dind
   script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build --build-arg DEPLOYER_VERSION=$CI_COMMIT_SHA -f Dockerfile.docker-compose -t $CI_REGISTRY_IMAGE:latest-docker-compose .
     - docker push $CI_REGISTRY_IMAGE:latest-docker-compose
   only:
