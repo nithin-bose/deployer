@@ -42,7 +42,7 @@ func CreateSAKubeConfig(userName string, clusterName string) error {
 		`apiVersion: v1`,
 		`kind: Secret`,
 		`metadata:`,
-		`  	name: {{.UserName}}-token`,
+		`	name: {{.UserName}}-token`,
 		`	annotations:`,
 		`		kubernetes.io/service-account.name: {{.UserName}}`,
 		`type: kubernetes.io/service-account-token`,
