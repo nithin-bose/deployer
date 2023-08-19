@@ -15,6 +15,8 @@
   ### Server:
   ```
   DEPLOYER_WEBHOOK_PORT
+  DEPLOYER_IS_GITLAB_TOKEN_ADMIN (optional)
+  DEPLOYER_GITLAB_ACCESS_TOKEN (optional)
   ```
 
   For docker deployments
