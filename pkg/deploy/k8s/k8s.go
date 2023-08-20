@@ -38,7 +38,7 @@ func CreateHelmServiceAccount(userName string) error {
 
 func CreateSAKubeConfig(userName string, clusterName string) error {
 	helmUserTokenSecretCmdTplArr := []string{
-		`kubectl apply -f - <<EOF`,
+		`kubectl apply --namespace kube-system -f - <<EOF`,
 		`apiVersion: v1`,
 		`kind: Secret`,
 		`metadata:`,
